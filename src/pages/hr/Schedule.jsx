@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Sparkles, CalendarOff } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
 import LoadingSpinner from '../../components/LoadingSpinner'
 
@@ -37,6 +37,9 @@ export default function Schedule() {
   const [deptFilter, setDeptFilter] = useState('')
   const [storeFilter, setStoreFilter] = useState('')
   const [editCell, setEditCell] = useState(null)
+  const [offRequests, setOffRequests] = useState([])
+  const [autoScheduling, setAutoScheduling] = useState(false)
+  const [minStaff, setMinStaff] = useState(3)
 
   const weekDates = getWeekDates(weekOffset)
   const weekStart = weekDates[0]
@@ -56,9 +59,13 @@ export default function Schedule() {
   }, [])
 
   useEffect(() => {
-    supabase.from('schedules').select('*')
-      .gte('date', weekStart).lte('date', weekEnd)
-      .then(({ data }) => setSchedules(data || []))
+    Promise.all([
+      supabase.from('schedules').select('*').gte('date', weekStart).lte('date', weekEnd),
+      supabase.from('off_requests').select('*').gte('date', weekStart).lte('date', weekEnd),
+    ]).then(([s, o]) => {
+      setSchedules(s.data || [])
+      setOffRequests(o.data || [])
+    })
   }, [weekStart])
 
   const getShift = (empName, date) => {
@@ -76,6 +83,106 @@ export default function Schedule() {
       if (data) setSchedules(prev => [...prev, data])
     }
     setEditCell(null)
+  }
+
+  const getOffRequest = (empName, date) => offRequests.find(o => o.employee === empName && o.date === date)
+
+  // AI Auto-Schedule
+  const WORK_SHIFTS = SHIFT_TYPES.filter(t => t.label !== '休' && t.label !== '輪值').map(t => t.label)
+
+  const handleAutoSchedule = async () => {
+    if (!confirm(`將為 ${filtered.length} 位員工自動排班（${weekStart} ~ ${weekEnd}）\n已有的排班會保留，空白格子才會填入。\n每天最少 ${minStaff} 人上班。`)) return
+    setAutoScheduling(true)
+
+    const empNames = filtered.map(e => e.name)
+    const newSchedules = []
+
+    // Build existing schedule map
+    const existing = {}
+    for (const s of schedules) {
+      existing[`${s.employee}_${s.date}`] = s.shift
+    }
+
+    // Build off-request map
+    const offMap = {}
+    for (const o of offRequests) {
+      offMap[`${o.employee}_${o.date}`] = true
+    }
+
+    // For each employee, count how many rest days they already have this week
+    const restCount = {}
+    empNames.forEach(name => { restCount[name] = 0 })
+    for (const date of weekDates) {
+      for (const name of empNames) {
+        const key = `${name}_${date}`
+        if (existing[key] === '休') restCount[name]++
+      }
+    }
+
+    // Auto-fill empty cells
+    for (const date of weekDates) {
+      const dayIndex = weekDates.indexOf(date) // 0=Mon ... 6=Sun
+
+      // Count how many people already scheduled to work this day
+      let workingCount = 0
+      for (const name of empNames) {
+        const key = `${name}_${date}`
+        if (existing[key] && existing[key] !== '休') workingCount++
+      }
+
+      // Fill unscheduled employees
+      for (const name of empNames) {
+        const key = `${name}_${date}`
+        if (existing[key]) continue // already scheduled
+
+        // Check if employee requested off
+        if (offMap[key]) {
+          newSchedules.push({ employee: name, date, shift: '休' })
+          restCount[name]++
+          existing[key] = '休'
+          continue
+        }
+
+        // Each person gets ~2 rest days per week
+        // Prefer weekend rest, but ensure minimum staff
+        const needRest = restCount[name] < 2
+        const isWeekend = dayIndex >= 5
+        const enoughStaff = workingCount >= minStaff
+
+        if (needRest && isWeekend && enoughStaff) {
+          newSchedules.push({ employee: name, date, shift: '休' })
+          restCount[name]++
+          existing[key] = '休'
+        } else if (needRest && !isWeekend && workingCount >= minStaff && restCount[name] === 0 && dayIndex >= 3) {
+          // Give a midweek rest if they have 0 so far and enough staff
+          newSchedules.push({ employee: name, date, shift: '休' })
+          restCount[name]++
+          existing[key] = '休'
+        } else {
+          // Assign a work shift (rotate through shifts)
+          const shiftIndex = (empNames.indexOf(name) + dayIndex) % WORK_SHIFTS.length
+          const shift = WORK_SHIFTS[shiftIndex]
+          newSchedules.push({ employee: name, date, shift })
+          workingCount++
+          existing[key] = shift
+        }
+      }
+    }
+
+    // Batch upsert
+    if (newSchedules.length > 0) {
+      const { data } = await supabase.from('schedules').upsert(newSchedules, { onConflict: 'employee,date' }).select()
+      if (data) {
+        setSchedules(prev => {
+          const map = {}
+          for (const s of [...prev, ...data]) map[`${s.employee}_${s.date}`] = s
+          return Object.values(map)
+        })
+      }
+    }
+
+    setAutoScheduling(false)
+    alert(`自動排班完成！填入 ${newSchedules.length} 個班次`)
   }
 
   if (loading) return <LoadingSpinner />
@@ -105,6 +212,18 @@ export default function Schedule() {
           <div>
             <h2><span className="header-icon">📅</span> 排班</h2>
             <p>員工每週排班管理（點擊格子排班）</p>
+          </div>
+          <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: 'var(--text-secondary)' }}>
+              最少上班
+              <input type="number" className="form-input" style={{ width: 50, padding: '4px 8px', fontSize: 12, textAlign: 'center' }}
+                value={minStaff} onChange={e => setMinStaff(Number(e.target.value) || 1)} min={1} />
+              人/天
+            </div>
+            <button className="btn btn-primary" style={{ width: 'auto', padding: '8px 16px' }}
+              onClick={handleAutoSchedule} disabled={autoScheduling}>
+              <Sparkles size={14} /> {autoScheduling ? 'AI 排班中...' : 'AI 自動排班'}
+            </button>
           </div>
         </div>
       </div>
@@ -195,6 +314,11 @@ export default function Schedule() {
                             }}>取消</button>
                           </div>
                         ) : null}
+                        {getOffRequest(emp.name, date) && !shift && (
+                          <div style={{ fontSize: 9, color: 'var(--accent-orange)', marginBottom: 2 }}>
+                            <CalendarOff size={10} style={{ verticalAlign: -1 }} /> 希望休
+                          </div>
+                        )}
                         <span
                           onClick={() => setEditCell(isEditing ? null : { empName: emp.name, date })}
                           style={{
