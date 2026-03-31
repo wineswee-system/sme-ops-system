@@ -1,22 +1,27 @@
 import { useState, useEffect } from 'react'
-import { Plus, Play, Pause } from 'lucide-react'
+import { Plus, Play, Pause, Pencil, Trash2 } from 'lucide-react'
 import { getWorkflows, createWorkflow, updateWorkflow } from '../../lib/db'
+import { supabase } from '../../lib/supabase'
 import LoadingSpinner from '../../components/LoadingSpinner'
 import Modal, { Field } from '../../components/Modal'
 
-const CATEGORIES = ['HR', '財務', '業務', '行政', '研發', '客服']
+const CATEGORIES = ['HR', '財務', '業務', '行政', '研發', '客服', '營運']
 
 export default function Workflows() {
   const [workflows, setWorkflows] = useState([])
   const [loading, setLoading] = useState(true)
   const [showModal, setShowModal] = useState(false)
+  const [showEditModal, setShowEditModal] = useState(false)
+  const [editTarget, setEditTarget] = useState(null)
   const [form, setForm] = useState({ name: '', category: CATEGORIES[0], steps: '', description: '' })
+  const [editForm, setEditForm] = useState({ name: '', category: '', steps: '', description: '', status: '' })
 
   useEffect(() => {
     getWorkflows().then(({ data }) => { setWorkflows(data || []); setLoading(false) })
   }, [])
 
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }))
+  const setE = (k, v) => setEditForm(f => ({ ...f, [k]: v }))
 
   const toggleStatus = async (w) => {
     const newStatus = w.status === '已啟用' ? '已停用' : '已啟用'
@@ -39,6 +44,39 @@ export default function Workflows() {
       setShowModal(false)
       setForm({ name: '', category: CATEGORIES[0], steps: '', description: '' })
     }
+  }
+
+  const openEdit = (w) => {
+    setEditTarget(w)
+    setEditForm({
+      name: w.name || '',
+      category: w.category || CATEGORIES[0],
+      steps: String(w.steps || ''),
+      description: w.description || '',
+      status: w.status || '草稿',
+    })
+    setShowEditModal(true)
+  }
+
+  const handleEdit = async () => {
+    if (!editTarget || !editForm.name) return
+    const { data } = await updateWorkflow(editTarget.id, {
+      name: editForm.name,
+      category: editForm.category,
+      steps: Number(editForm.steps) || 1,
+      description: editForm.description,
+      status: editForm.status,
+    })
+    if (data) {
+      setWorkflows(prev => prev.map(w => w.id === editTarget.id ? data : w))
+      setShowEditModal(false)
+    }
+  }
+
+  const handleDelete = async (id) => {
+    if (!confirm('確定刪除此流程？')) return
+    await supabase.from('workflows').delete().eq('id', id)
+    setWorkflows(prev => prev.filter(w => w.id !== id))
   }
 
   if (loading) return <LoadingSpinner />
@@ -75,18 +113,27 @@ export default function Workflows() {
           <table className="data-table">
             <thead><tr><th>流程名稱</th><th>分類</th><th>步驟數</th><th>執行中</th><th>說明</th><th>狀態</th><th>操作</th></tr></thead>
             <tbody>
+              {workflows.length === 0 && <tr><td colSpan={7} style={{ textAlign: 'center', color: 'var(--text-muted)' }}>尚無流程</td></tr>}
               {workflows.map(w => (
                 <tr key={w.id}>
                   <td style={{ fontWeight: 600 }}>{w.name}</td>
                   <td><span className="badge badge-cyan">{w.category}</span></td>
                   <td>{w.steps}</td>
                   <td style={{ fontWeight: 600, color: w.active_instances > 0 ? 'var(--accent-cyan)' : 'var(--text-muted)' }}>{w.active_instances}</td>
-                  <td style={{ color: 'var(--text-secondary)', fontSize: 12 }}>{w.description}</td>
-                  <td><span className={`badge ${w.status === '已啟用' ? 'badge-success' : 'badge-warning'}`}><span className="badge-dot"></span>{w.status}</span></td>
+                  <td style={{ color: 'var(--text-secondary)', fontSize: 12, maxWidth: 300 }}>{w.description}</td>
+                  <td><span className={`badge ${w.status === '已啟用' ? 'badge-success' : w.status === '已停用' ? 'badge-danger' : 'badge-warning'}`}><span className="badge-dot"></span>{w.status}</span></td>
                   <td>
-                    <button className="btn btn-sm btn-secondary" onClick={() => toggleStatus(w)}>
-                      {w.status === '已啟用' ? <Pause size={12} /> : <Play size={12} />}
-                    </button>
+                    <div style={{ display: 'flex', gap: 6 }}>
+                      <button className="btn btn-sm btn-secondary" style={{ width: 'auto', padding: '4px 8px' }} onClick={() => openEdit(w)} title="編輯">
+                        <Pencil size={12} />
+                      </button>
+                      <button className="btn btn-sm btn-secondary" style={{ width: 'auto', padding: '4px 8px' }} onClick={() => toggleStatus(w)} title={w.status === '已啟用' ? '停用' : '啟用'}>
+                        {w.status === '已啟用' ? <Pause size={12} /> : <Play size={12} />}
+                      </button>
+                      <button className="btn btn-sm btn-secondary" style={{ width: 'auto', padding: '4px 8px', color: 'var(--accent-red)' }} onClick={() => handleDelete(w.id)} title="刪除">
+                        <Trash2 size={12} />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -95,6 +142,7 @@ export default function Workflows() {
         </div>
       </div>
 
+      {/* 新增流程 */}
       {showModal && (
         <Modal title="新增流程" onClose={() => setShowModal(false)} onSubmit={handleSubmit}>
           <Field label="流程名稱 *">
@@ -112,6 +160,35 @@ export default function Workflows() {
           </div>
           <Field label="說明">
             <textarea className="form-input" style={{ width: '100%', height: 80, resize: 'vertical' }} placeholder="流程說明" value={form.description} onChange={e => set('description', e.target.value)} />
+          </Field>
+        </Modal>
+      )}
+
+      {/* 編輯流程 */}
+      {showEditModal && editTarget && (
+        <Modal title={`編輯流程 — ${editTarget.name}`} onClose={() => setShowEditModal(false)} onSubmit={handleEdit} submitText="儲存變更">
+          <Field label="流程名稱 *">
+            <input className="form-input" type="text" style={{ width: '100%' }} value={editForm.name} onChange={e => setE('name', e.target.value)} />
+          </Field>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+            <Field label="分類">
+              <select className="form-input" style={{ width: '100%' }} value={editForm.category} onChange={e => setE('category', e.target.value)}>
+                {CATEGORIES.map(c => <option key={c}>{c}</option>)}
+              </select>
+            </Field>
+            <Field label="步驟數">
+              <input className="form-input" type="number" style={{ width: '100%' }} min="1" value={editForm.steps} onChange={e => setE('steps', e.target.value)} />
+            </Field>
+          </div>
+          <Field label="狀態">
+            <select className="form-input" style={{ width: '100%' }} value={editForm.status} onChange={e => setE('status', e.target.value)}>
+              <option>草稿</option>
+              <option>已啟用</option>
+              <option>已停用</option>
+            </select>
+          </Field>
+          <Field label="說明">
+            <textarea className="form-input" style={{ width: '100%', height: 80, resize: 'vertical' }} value={editForm.description} onChange={e => setE('description', e.target.value)} />
           </Field>
         </Modal>
       )}
