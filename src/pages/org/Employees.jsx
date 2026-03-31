@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Plus, Search, UserMinus, UserPlus } from 'lucide-react'
+import { Plus, Search, UserMinus, UserPlus, Pencil } from 'lucide-react'
 import { getEmployees, createEmployee, updateEmployee } from '../../lib/db'
 import { supabase } from '../../lib/supabase'
 import LoadingSpinner from '../../components/LoadingSpinner'
@@ -19,9 +19,11 @@ export default function Employees() {
   const [showModal, setShowModal] = useState(false)
   const [showResignModal, setShowResignModal] = useState(false)
   const [showRehireModal, setShowRehireModal] = useState(false)
+  const [showEditModal, setShowEditModal] = useState(false)
   const [selectedEmp, setSelectedEmp] = useState(null)
   const [resignDate, setResignDate] = useState('')
   const [resignReason, setResignReason] = useState('')
+  const [editForm, setEditForm] = useState({})
   const [form, setForm] = useState({ name: '', name_en: '', dept: '', position: '', store: '', email: '', phone: '', join_date: '', status: '在職' })
 
   useEffect(() => {
@@ -71,6 +73,27 @@ export default function Employees() {
     if (data) {
       setEmployees(prev => prev.map(e => e.id === selectedEmp.id ? data : e))
       setShowResignModal(false)
+    }
+  }
+
+  // 編輯
+  const openEdit = (emp) => {
+    setSelectedEmp(emp)
+    setEditForm({
+      name: emp.name || '', name_en: emp.name_en || '',
+      dept: emp.dept || '', position: emp.position || '',
+      store: emp.store || '', email: emp.email || '',
+      phone: emp.phone || '', join_date: emp.join_date || '',
+    })
+    setShowEditModal(true)
+  }
+  const setE = (k, v) => setEditForm(f => ({ ...f, [k]: v }))
+  const handleEdit = async () => {
+    if (!selectedEmp) return
+    const { data } = await updateEmployee(selectedEmp.id, editForm)
+    if (data) {
+      setEmployees(prev => prev.map(e => e.id === selectedEmp.id ? data : e))
+      setShowEditModal(false)
     }
   }
 
@@ -208,17 +231,23 @@ export default function Employees() {
                     </span>
                   </td>
                   <td>
-                    {e.status === '在職' ? (
-                      <button className="btn btn-sm btn-secondary" style={{ width: 'auto', padding: '4px 10px', fontSize: 11, color: 'var(--accent-red)' }}
-                        onClick={() => openResign(e)}>
-                        <UserMinus size={12} /> 離職
+                    <div style={{ display: 'flex', gap: 6 }}>
+                      <button className="btn btn-sm btn-secondary" style={{ width: 'auto', padding: '4px 10px', fontSize: 11 }}
+                        onClick={() => openEdit(e)}>
+                        <Pencil size={12} /> 編輯
                       </button>
-                    ) : (
-                      <button className="btn btn-sm btn-secondary" style={{ width: 'auto', padding: '4px 10px', fontSize: 11, color: 'var(--accent-green)' }}
-                        onClick={() => openRehire(e)}>
-                        <UserPlus size={12} /> 復職
-                      </button>
-                    )}
+                      {e.status === '在職' ? (
+                        <button className="btn btn-sm btn-secondary" style={{ width: 'auto', padding: '4px 10px', fontSize: 11, color: 'var(--accent-red)' }}
+                          onClick={() => openResign(e)}>
+                          <UserMinus size={12} /> 離職
+                        </button>
+                      ) : (
+                        <button className="btn btn-sm btn-secondary" style={{ width: 'auto', padding: '4px 10px', fontSize: 11, color: 'var(--accent-green)' }}
+                          onClick={() => openRehire(e)}>
+                          <UserPlus size={12} /> 復職
+                        </button>
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -302,6 +331,47 @@ export default function Employees() {
               離職原因：{selectedEmp.resign_reason || '-'}
             </div>
           )}
+        </Modal>
+      )}
+      {/* 編輯員工 Modal */}
+      {showEditModal && selectedEmp && (
+        <Modal title={`編輯員工 — ${selectedEmp.name}`} onClose={() => setShowEditModal(false)} onSubmit={handleEdit} submitText="儲存變更">
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+            <Field label="姓名">
+              <input className="form-input" type="text" style={{ width: '100%' }} value={editForm.name} onChange={e => setE('name', e.target.value)} />
+            </Field>
+            <Field label="英文姓名">
+              <input className="form-input" type="text" style={{ width: '100%' }} value={editForm.name_en} onChange={e => setE('name_en', e.target.value)} />
+            </Field>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+            <Field label="部門">
+              <select className="form-input" style={{ width: '100%' }} value={editForm.dept} onChange={e => setE('dept', e.target.value)}>
+                <option value="">請選擇</option>
+                {departments.map(d => <option key={d.id} value={d.name}>{d.name}</option>)}
+              </select>
+            </Field>
+            <Field label="職稱">
+              <input className="form-input" type="text" style={{ width: '100%' }} value={editForm.position} onChange={e => setE('position', e.target.value)} />
+            </Field>
+          </div>
+          <Field label="門市 / 分店">
+            <select className="form-input" style={{ width: '100%' }} value={editForm.store} onChange={e => setE('store', e.target.value)}>
+              <option value="">請選擇</option>
+              {locations.map(l => <option key={l.id} value={l.name}>{l.name}</option>)}
+            </select>
+          </Field>
+          <Field label="Email">
+            <input className="form-input" type="email" style={{ width: '100%' }} value={editForm.email} onChange={e => setE('email', e.target.value)} />
+          </Field>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+            <Field label="手機">
+              <input className="form-input" type="text" style={{ width: '100%' }} value={editForm.phone} onChange={e => setE('phone', e.target.value)} />
+            </Field>
+            <Field label="到職日">
+              <input className="form-input" type="date" style={{ width: '100%' }} value={editForm.join_date} onChange={e => setE('join_date', e.target.value)} />
+            </Field>
+          </div>
         </Modal>
       )}
     </div>
