@@ -44,7 +44,7 @@ export default function Schedule() {
 
   useEffect(() => {
     Promise.all([
-      supabase.from('employees').select('id, name, department, position, store').eq('status', '在職').order('name'),
+      supabase.from('employees').select('id, name, dept, position, store').eq('status', '在職').order('name'),
       supabase.from('departments').select('*').order('name'),
       supabase.from('locations').select('*').order('name'),
     ]).then(([e, d, l]) => {
@@ -81,7 +81,7 @@ export default function Schedule() {
   if (loading) return <LoadingSpinner />
 
   const filtered = employees.filter(e =>
-    (deptFilter === '' || e.department === deptFilter) &&
+    (deptFilter === '' || e.dept === deptFilter) &&
     (storeFilter === '' || e.store === storeFilter)
   )
 
@@ -165,7 +165,7 @@ export default function Schedule() {
                 <tr key={emp.id}>
                   <td>
                     <div style={{ fontWeight: 600, fontSize: 13 }}>{emp.name}</div>
-                    <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>{emp.department}</div>
+                    <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>{emp.dept}</div>
                   </td>
                   {weekDates.map(date => {
                     const shift = getShift(emp.name, date)
