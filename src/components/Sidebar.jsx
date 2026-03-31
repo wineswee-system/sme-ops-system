@@ -56,6 +56,7 @@ const navSections = [
           { icon: Workflow, label: '流程', path: '/process/workflows' },
           { icon: ListChecks, label: '任務', path: '/process/tasks' },
           { icon: CheckSquare, label: '查核清單', path: '/process/checklists' },
+          { icon: ScrollText, label: 'SOP 範本', path: '/process/sop' },
         ]
       }
     ]

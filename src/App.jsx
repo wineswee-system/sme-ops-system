@@ -31,6 +31,7 @@ import ProcessOverview from './pages/process/Overview'
 import Workflows from './pages/process/Workflows'
 import Tasks from './pages/process/Tasks'
 import Checklists from './pages/process/Checklists'
+import SOPTemplates from './pages/process/SOPTemplates'
 import OrgOverview from './pages/org/Overview'
 import OrgChart from './pages/org/OrgChart'
 import Companies from './pages/org/Companies'
@@ -89,6 +90,7 @@ function AdminApp() {
             <Route path="/process/workflows" element={<Workflows />} />
             <Route path="/process/tasks" element={<Tasks />} />
             <Route path="/process/checklists" element={<Checklists />} />
+            <Route path="/process/sop" element={<SOPTemplates />} />
             {/* Organization */}
             <Route path="/org/overview" element={<OrgOverview />} />
             <Route path="/org/chart" element={<OrgChart />} />
