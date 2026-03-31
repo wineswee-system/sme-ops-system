@@ -7,11 +7,15 @@ import {
   UserSearch, FolderOpen, ArrowRightLeft, Plane, Receipt,
   Eye, ListChecks, CheckSquare, Building, MapPin, Network,
   UserCircle, MessageCircle, FileText, Zap, Bell, UserCog,
-  ScrollText, Settings, BookOpen, Bot, Globe, Award, LogOut,
+  ScrollText, Settings, BookOpen, Bot, Award, LogOut, Sun, Moon,
   Warehouse, PackageOpen, Truck, BarChart2, Package,
   Handshake, TrendingUp, Megaphone, HeadphonesIcon
 } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
+
+// Init theme from localStorage
+const savedTheme = typeof window !== 'undefined' ? localStorage.getItem('theme') : null
+if (savedTheme) document.documentElement.setAttribute('data-theme', savedTheme)
 
 const navSections = [
   {
@@ -134,6 +138,7 @@ export default function Sidebar() {
   const location = useLocation()
   const { profile, signOut } = useAuth()
   const [openMenus, setOpenMenus] = useState({ '/hr': true, '/process': true, '/org': true })
+  const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'dark')
 
   const toggleMenu = (path) => {
     setOpenMenus(prev => ({ ...prev, [path]: !prev[path] }))
@@ -221,9 +226,15 @@ export default function Sidebar() {
             <LogOut size={15} />
           </button>
         </div>
-        <div className="sidebar-lang-toggle">
-          <Globe size={14} />
-          <span>切換為 English</span>
+        <div className="sidebar-lang-toggle" onClick={() => {
+          const current = document.documentElement.getAttribute('data-theme')
+          const next = current === 'light' ? 'dark' : 'light'
+          document.documentElement.setAttribute('data-theme', next)
+          localStorage.setItem('theme', next)
+          setTheme(next)
+        }} style={{ cursor: 'pointer', userSelect: 'none' }}>
+          {theme === 'light' ? <Moon size={14} /> : <Sun size={14} />}
+          <span>{theme === 'light' ? '深色模式' : '淺色模式'}</span>
         </div>
       </div>
     </aside>
