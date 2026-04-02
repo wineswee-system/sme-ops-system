@@ -235,7 +235,7 @@ export default function DemoLanding() {
         position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100,
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         padding: '0 40px', height: 64,
-        background: 'rgba(6, 9, 26, 0.85)',
+        background: 'var(--bg-sidebar)',
         backdropFilter: 'blur(16px)',
         borderBottom: '1px solid var(--border-subtle)',
       }}>
@@ -246,7 +246,7 @@ export default function DemoLanding() {
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             fontSize: 16, fontWeight: 800, color: '#fff',
           }}>S</div>
-          <span style={{ fontSize: 15, fontWeight: 700, letterSpacing: '-0.3px' }}>SME OPS</span>
+          <span style={{ fontSize: 15, fontWeight: 700, letterSpacing: '-0.3px', color: 'var(--text-primary)' }}>SME OPS</span>
           <span style={{
             fontSize: 10, fontWeight: 600, padding: '2px 8px', borderRadius: 20,
             background: 'var(--accent-cyan-dim)', color: 'var(--accent-cyan)',
