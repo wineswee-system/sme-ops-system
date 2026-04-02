@@ -277,7 +277,7 @@ export default function DemoLanding() {
           transform: visible ? 'translateY(0)' : 'translateY(24px)',
           transition: 'all 0.7s ease 0.1s',
         }}>
-          <span style={{ background: 'linear-gradient(135deg, #fff 0%, #94a3b8 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+          <span style={{ background: 'linear-gradient(135deg, var(--text-primary) 0%, var(--text-tertiary) 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
             人資 · 倉儲 · 客戶
           </span>
           <br />
