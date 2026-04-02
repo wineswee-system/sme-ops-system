@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { NavLink, useLocation } from 'react-router-dom'
+import { NavLink, useLocation, useNavigate } from 'react-router-dom'
 import {
   LayoutDashboard, BarChart3, Users, ClipboardList, Building2,
   GitBranch, ChevronRight, Clock, CalendarOff, CalendarPlus,
@@ -9,7 +9,7 @@ import {
   UserCircle, MessageCircle, FileText, Zap, Bell, UserCog,
   ScrollText, Settings, BookOpen, Bot, Award, LogOut, Sun, Moon,
   Warehouse, PackageOpen, Truck, BarChart2, Package,
-  Handshake, TrendingUp, Megaphone, HeadphonesIcon
+  Handshake, TrendingUp, Megaphone, HeadphonesIcon, Sparkles
 } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
 
@@ -136,6 +136,7 @@ const navSections = [
 
 export default function Sidebar() {
   const location = useLocation()
+  const navigate = useNavigate()
   const { profile, signOut } = useAuth()
   const [openMenus, setOpenMenus] = useState({ '/hr': true, '/process': true, '/org': true })
   const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'dark')
@@ -157,6 +158,28 @@ export default function Sidebar() {
           <h1>SME Ops</h1>
           <span>Operations System</span>
         </div>
+        <button
+          onClick={() => navigate('/demo')}
+          title="Demo 展示頁"
+          style={{
+            background: 'linear-gradient(135deg, var(--accent-cyan-dim), var(--accent-purple-dim))',
+            border: '1px solid var(--border-medium)',
+            color: 'var(--accent-cyan)',
+            cursor: 'pointer',
+            padding: '4px 10px',
+            borderRadius: 'var(--radius-full)',
+            fontSize: 11,
+            fontWeight: 700,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 4,
+            flexShrink: 0,
+            transition: 'var(--transition-fast)',
+          }}
+        >
+          <Sparkles size={12} />
+          Demo
+        </button>
       </div>
 
       <nav className="sidebar-nav">

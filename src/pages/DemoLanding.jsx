@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
   Users, GitBranch, Building2, HeadphonesIcon, Warehouse, Settings,
-  Bot, LayoutDashboard, BarChart3, ChevronRight, Sparkles, ArrowRight
+  Bot, LayoutDashboard, BarChart3, Sparkles, ArrowRight, ArrowLeft
 } from 'lucide-react'
 
 const systems = [
@@ -128,6 +128,17 @@ export default function DemoLanding() {
       <div style={styles.bgOrb3} />
 
       <div style={styles.container}>
+        {/* Back Button */}
+        <button
+          onClick={() => navigate('/')}
+          style={styles.backBtn}
+          onMouseEnter={e => { e.currentTarget.style.background = 'var(--glass-strong)'; e.currentTarget.style.borderColor = 'var(--border-strong)' }}
+          onMouseLeave={e => { e.currentTarget.style.background = 'var(--glass-medium)'; e.currentTarget.style.borderColor = 'var(--border-medium)' }}
+        >
+          <ArrowLeft size={16} />
+          <span>返回儀表板</span>
+        </button>
+
         {/* Header */}
         <header style={styles.header}>
           <div style={styles.badge}>
@@ -242,7 +253,23 @@ const styles = {
     minHeight: '100vh',
     background: 'var(--bg-primary)',
     position: 'relative',
-    overflow: 'hidden',
+    overflowX: 'hidden',
+    overflowY: 'auto',
+  },
+  backBtn: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '6px',
+    padding: '8px 16px',
+    borderRadius: 'var(--radius-full)',
+    background: 'var(--glass-medium)',
+    border: '1px solid var(--border-medium)',
+    color: 'var(--text-secondary)',
+    fontSize: '13px',
+    fontWeight: 600,
+    cursor: 'pointer',
+    transition: 'all 0.2s ease',
+    marginBottom: '24px',
   },
   bgOrb1: {
     position: 'fixed',
