@@ -465,6 +465,218 @@ export default function DemoLanding() {
       </section>
 
       {/* ══════════════════════════════════════════
+          SECTION 3.5: LINE 整合預覽
+         ══════════════════════════════════════════ */}
+      <section style={{ padding: '80px 40px', maxWidth: 1200, margin: '0 auto' }}>
+        <div style={{ textAlign: 'center', marginBottom: 52 }}>
+          <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--accent-green)', letterSpacing: '2px', marginBottom: 12 }}>LINE INTEGRATION</div>
+          <h2 style={{ fontSize: 36, fontWeight: 800, margin: 0 }}>LINE 官方帳號整合</h2>
+          <p style={{ color: 'var(--text-secondary)', marginTop: 12, fontSize: 15 }}>員工用 LINE 即可打卡、查薪水、請假，不需要額外下載 App</p>
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 32, alignItems: 'start' }}>
+
+          {/* Phone 1: Chat + Flex Messages */}
+          <div style={{ textAlign: 'center' }}>
+            <div style={{
+              width: 280, margin: '0 auto', borderRadius: 32, overflow: 'hidden',
+              border: '3px solid var(--border-medium)', background: '#e8e8e8',
+              boxShadow: 'var(--shadow-xl)',
+            }}>
+              {/* Status bar */}
+              <div style={{ background: '#06C755', padding: '8px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <span style={{ fontSize: 11, color: '#fff', fontWeight: 600 }}>SME OPS</span>
+                <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.7)' }}>官方帳號</span>
+              </div>
+              {/* Chat area */}
+              <div style={{ background: '#7494A5', padding: '12px 10px', minHeight: 360, display: 'flex', flexDirection: 'column', gap: 8 }}>
+                {/* User message */}
+                <div style={{ alignSelf: 'flex-end', background: '#8DE055', borderRadius: '14px 14px 4px 14px', padding: '8px 12px', maxWidth: '60%' }}>
+                  <span style={{ fontSize: 12, color: '#1a1a1a' }}>打卡</span>
+                </div>
+                {/* Flex: Clock */}
+                <div style={{ alignSelf: 'flex-start', background: '#fff', borderRadius: 12, overflow: 'hidden', width: '75%', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
+                  <div style={{ background: '#EFF9FB', padding: '10px 12px' }}>
+                    <div style={{ fontSize: 9, color: '#67B2C4', fontWeight: 600 }}>⏰ 打卡</div>
+                    <div style={{ fontSize: 13, fontWeight: 800, color: '#0E7490', marginTop: 2 }}>上班打卡成功</div>
+                  </div>
+                  <div style={{ padding: '8px 12px', fontSize: 10, color: '#666' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}><span>員工</span><span style={{ fontWeight: 700, color: '#333' }}>王小明</span></div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}><span>日期</span><span style={{ fontWeight: 700, color: '#333' }}>2026-04-02</span></div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}><span>時間</span><span style={{ fontWeight: 700, color: '#0891B2' }}>08:52</span></div>
+                  </div>
+                </div>
+                {/* User message */}
+                <div style={{ alignSelf: 'flex-end', background: '#8DE055', borderRadius: '14px 14px 4px 14px', padding: '8px 12px', maxWidth: '60%' }}>
+                  <span style={{ fontSize: 12, color: '#1a1a1a' }}>薪資</span>
+                </div>
+                {/* Flex: Salary */}
+                <div style={{ alignSelf: 'flex-start', background: '#fff', borderRadius: 12, overflow: 'hidden', width: '75%', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
+                  <div style={{ background: '#ECFDF5', padding: '10px 12px' }}>
+                    <div style={{ fontSize: 9, color: '#6EBF9E', fontWeight: 600 }}>💰 2026-04 薪資</div>
+                    <div style={{ fontSize: 16, fontWeight: 800, color: '#047857', marginTop: 2 }}>NT$ 45,800</div>
+                    <div style={{ fontSize: 9, color: '#6EBF9E' }}>實發薪資</div>
+                  </div>
+                  <div style={{ padding: '8px 12px', fontSize: 10, color: '#666' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 3 }}><span>底薪</span><span style={{ color: '#333' }}>NT$ 40,000</span></div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 3 }}><span>津貼</span><span style={{ color: '#059669' }}>+3,000</span></div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}><span>加班費</span><span style={{ color: '#2563EB' }}>+5,200</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div style={{ marginTop: 16, fontSize: 14, fontWeight: 700, color: 'var(--text-primary)' }}>聊天指令回覆</div>
+            <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 4 }}>輸入「打卡」「薪資」即時回覆</div>
+          </div>
+
+          {/* Phone 2: LIFF Home */}
+          <div style={{ textAlign: 'center' }}>
+            <div style={{
+              width: 280, margin: '0 auto', borderRadius: 32, overflow: 'hidden',
+              border: '3px solid var(--border-medium)', background: '#06091a',
+              boxShadow: 'var(--shadow-xl)',
+            }}>
+              {/* LIFF header */}
+              <div style={{ background: '#0c1029', padding: '12px 16px', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'rgba(34,211,238,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, fontWeight: 800, color: '#22d3ee' }}>王</div>
+                  <div>
+                    <div style={{ fontSize: 14, fontWeight: 700, color: '#f1f5f9' }}>午安，王小明</div>
+                    <div style={{ fontSize: 10, color: '#64748b' }}>研發部 · 資深工程師</div>
+                  </div>
+                </div>
+              </div>
+              {/* Status */}
+              <div style={{ padding: '10px 14px', display: 'flex', gap: 8 }}>
+                <div style={{ flex: 1, background: 'rgba(15,23,55,0.75)', border: '1px solid rgba(148,163,184,0.1)', borderRadius: 10, padding: '8px 10px' }}>
+                  <div style={{ fontSize: 9, color: '#64748b' }}>出勤</div>
+                  <div style={{ fontSize: 11, fontWeight: 700, color: '#22d3ee' }}>已上班</div>
+                </div>
+                <div style={{ flex: 1, background: 'rgba(15,23,55,0.75)', border: '1px solid rgba(148,163,184,0.1)', borderRadius: 10, padding: '8px 10px' }}>
+                  <div style={{ fontSize: 9, color: '#64748b' }}>待辦</div>
+                  <div style={{ fontSize: 11, fontWeight: 700, color: '#fb923c' }}>3 項任務</div>
+                </div>
+              </div>
+              {/* Quick clock */}
+              <div style={{ padding: '0 14px 10px' }}>
+                <div style={{ background: 'linear-gradient(135deg, rgba(251,146,60,0.15), rgba(248,113,113,0.15))', border: '1px solid rgba(251,146,60,0.25)', borderRadius: 12, padding: '12px 14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div>
+                    <div style={{ fontSize: 12, fontWeight: 700, color: '#f1f5f9' }}>點我下班打卡</div>
+                    <div style={{ fontSize: 10, color: '#94a3b8', marginTop: 2 }}>上班 08:52</div>
+                  </div>
+                  <div style={{ width: 36, height: 36, borderRadius: 10, background: 'linear-gradient(135deg, #fb923c, #f87171)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16 }}>👋</div>
+                </div>
+              </div>
+              {/* Menu grid */}
+              <div style={{ padding: '0 14px 10px' }}>
+                <div style={{ fontSize: 12, fontWeight: 700, color: '#f1f5f9', marginBottom: 8 }}>功能選單</div>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 6 }}>
+                  {[
+                    { icon: '⏰', label: '打卡', color: 'rgba(34,211,238,0.15)' },
+                    { icon: '💰', label: '查薪水', color: 'rgba(52,211,153,0.15)' },
+                    { icon: '📋', label: '請假', color: 'rgba(59,130,246,0.15)' },
+                    { icon: '📦', label: '查庫存', color: 'rgba(251,146,60,0.15)' },
+                    { icon: '⚙️', label: '流程', color: 'rgba(167,139,250,0.15)' },
+                    { icon: '🧾', label: '報帳', color: 'rgba(251,191,36,0.15)' },
+                    { icon: '📅', label: '排休', color: 'rgba(34,211,238,0.15)' },
+                    { icon: '🤝', label: '客戶', color: 'rgba(244,114,182,0.15)' },
+                  ].map(m => (
+                    <div key={m.label} style={{ background: 'rgba(15,23,55,0.75)', border: '1px solid rgba(148,163,184,0.1)', borderRadius: 10, padding: '10px 4px', textAlign: 'center' }}>
+                      <div style={{ width: 32, height: 32, borderRadius: 8, background: m.color, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16, margin: '0 auto 4px' }}>{m.icon}</div>
+                      <div style={{ fontSize: 9, fontWeight: 600, color: '#94a3b8' }}>{m.label}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              {/* Tab bar */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', background: 'rgba(6,9,26,0.95)', borderTop: '1px solid rgba(148,163,184,0.1)', padding: '6px 0 8px' }}>
+                {['首頁', '打卡', '請假', '庫存'].map((t, i) => (
+                  <div key={t} style={{ textAlign: 'center', fontSize: 9, color: i === 0 ? '#22d3ee' : '#64748b', fontWeight: 500 }}>{t}</div>
+                ))}
+              </div>
+            </div>
+            <div style={{ marginTop: 16, fontSize: 14, fontWeight: 700, color: 'var(--text-primary)' }}>LIFF 員工 App</div>
+            <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 4 }}>LINE 內開啟，免安裝</div>
+          </div>
+
+          {/* Phone 3: Rich Menu */}
+          <div style={{ textAlign: 'center' }}>
+            <div style={{
+              width: 280, margin: '0 auto', borderRadius: 32, overflow: 'hidden',
+              border: '3px solid var(--border-medium)', background: '#e8e8e8',
+              boxShadow: 'var(--shadow-xl)',
+            }}>
+              {/* Status bar */}
+              <div style={{ background: '#06C755', padding: '8px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <span style={{ fontSize: 11, color: '#fff', fontWeight: 600 }}>SME OPS</span>
+                <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.7)' }}>官方帳號</span>
+              </div>
+              {/* Chat area */}
+              <div style={{ background: '#7494A5', padding: '12px 10px', height: 140, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', gap: 6 }}>
+                <div style={{ alignSelf: 'flex-start', background: '#fff', borderRadius: 12, padding: '8px 12px', fontSize: 11, color: '#333', maxWidth: '80%' }}>
+                  歡迎使用 SME OPS 員工服務！<br/>請點選下方選單開始操作 👇
+                </div>
+              </div>
+              {/* Rich Menu */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gridTemplateRows: 'repeat(2, 1fr)', background: '#f0f2f5' }}>
+                {[
+                  { icon: '⏰', label: '打卡', sub: 'Clock In/Out', bg: '#f8fcff', color: '#0891B2' },
+                  { icon: '📋', label: '請假', sub: 'Leave', bg: '#f6f8ff', color: '#2563EB' },
+                  { icon: '💰', label: '薪水', sub: 'Salary', bg: '#f4fdf9', color: '#059669' },
+                  { icon: '📦', label: '庫存', sub: 'Inventory', bg: '#fffbf5', color: '#EA580C' },
+                  { icon: '🧾', label: '報帳', sub: 'Expense', bg: '#faf8ff', color: '#7C3AED' },
+                  { icon: '✨', label: '更多', sub: 'More', bg: '#fef6fa', color: '#DB2777' },
+                ].map(m => (
+                  <div key={m.label} style={{
+                    background: m.bg, padding: '14px 6px', textAlign: 'center',
+                    borderRight: '1px solid rgba(0,0,0,0.04)', borderBottom: '1px solid rgba(0,0,0,0.04)',
+                    display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 4,
+                  }}>
+                    <div style={{
+                      width: 36, height: 36, borderRadius: 10,
+                      background: `${m.color}18`, border: `1px solid ${m.color}25`,
+                      display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18,
+                    }}>{m.icon}</div>
+                    <div style={{ fontSize: 12, fontWeight: 800, color: '#1e293b' }}>{m.label}</div>
+                    <div style={{ fontSize: 7, color: '#94a3b8', letterSpacing: '0.5px', textTransform: 'uppercase' }}>{m.sub}</div>
+                  </div>
+                ))}
+              </div>
+              {/* Bottom bar */}
+              <div style={{ background: '#fff', padding: '8px 0', textAlign: 'center', borderTop: '1px solid rgba(0,0,0,0.06)' }}>
+                <span style={{ fontSize: 11, color: '#666' }}>SME OPS 智慧選單 ▾</span>
+              </div>
+            </div>
+            <div style={{ marginTop: 16, fontSize: 14, fontWeight: 700, color: 'var(--text-primary)' }}>Rich Menu 快捷選單</div>
+            <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 4 }}>6 格精緻圖示，一鍵操作</div>
+          </div>
+        </div>
+
+        {/* LINE features list */}
+        <div style={{
+          display: 'flex', justifyContent: 'center', gap: 24, marginTop: 40, flexWrap: 'wrap',
+        }}>
+          {[
+            '免安裝 App',
+            'LINE 內直接操作',
+            '即時 Flex Message 回覆',
+            '自動推播通知',
+            'GPS 定位打卡',
+            '整月排休日曆',
+          ].map(f => (
+            <div key={f} style={{
+              display: 'flex', alignItems: 'center', gap: 6,
+              padding: '6px 14px', borderRadius: 20,
+              background: 'rgba(6, 199, 85, 0.08)', border: '1px solid rgba(6, 199, 85, 0.2)',
+              fontSize: 12, fontWeight: 600, color: '#06C755',
+            }}>
+              <span style={{ fontSize: 14 }}>✓</span> {f}
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════
           SECTION 4: 核心設計理念
          ══════════════════════════════════════════ */}
       <section style={{ padding: '80px 40px', maxWidth: 1100, margin: '0 auto' }}>
