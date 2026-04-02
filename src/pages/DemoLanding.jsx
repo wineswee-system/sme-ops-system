@@ -492,7 +492,138 @@ export default function DemoLanding() {
       </section>
 
       {/* ══════════════════════════════════════════
-          SECTION 5: 聯繫我們
+          SECTION 5: 完整功能清單
+         ══════════════════════════════════════════ */}
+      <section style={{ padding: '80px 40px', maxWidth: 1200, margin: '0 auto' }}>
+        <div style={{ textAlign: 'center', marginBottom: 52 }}>
+          <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--accent-blue)', letterSpacing: '2px', marginBottom: 12 }}>FULL FEATURES</div>
+          <h2 style={{ fontSize: 36, fontWeight: 800, margin: 0 }}>完整功能清單</h2>
+          <p style={{ color: 'var(--text-secondary)', marginTop: 12, fontSize: 15 }}>54 個功能頁面、23 張資料表、涵蓋企業營運每一個面向</p>
+        </div>
+
+        {/* Feature modules */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: 16 }}>
+          {[
+            {
+              icon: '👥', title: '人資管理', tag: '15 項功能', color: 'var(--accent-cyan)',
+              items: ['HR 報表總覽', '打卡追蹤（GPS 地理圍籬）', '請假管理（審核流程）', '加班申請', '薪資管理 + PDF 匯出', '排班系統', '假日管理', '排班規則', '績效考核', '招募管理', '文件管理', '轉調紀錄', '公出差旅', '費用核銷', '績效獎金'],
+            },
+            {
+              icon: '🤝', title: 'CRM 客戶管理', tag: '5 項功能', color: 'var(--accent-blue)',
+              items: ['CRM 總覽儀表板', '客戶 360° 管理', '銷售漏斗追蹤', '行銷自動化', '客服工單系統'],
+            },
+            {
+              icon: '📦', title: 'WMS 倉儲管理', tag: '6 項功能', color: 'var(--accent-green)',
+              items: ['倉庫總覽', 'SKU 商品主檔', '入庫管理', '庫存即時追蹤', '出庫管理', '異常與報表分析'],
+            },
+            {
+              icon: '⚙️', title: '流程管理', tag: '5 項功能', color: 'var(--accent-purple)',
+              items: ['流程進度總覽', '工作流程設計', '任務分派追蹤', '查核清單', 'SOP 標準作業程序'],
+            },
+            {
+              icon: '🏢', title: '組織管理', tag: '8 項功能', color: 'var(--accent-orange)',
+              items: ['組織總覽', '組織圖', '多公司管理', '門市管理（GPS 座標）', '部門管理', '員工目錄', 'LINE 整合', '模板管理'],
+            },
+            {
+              icon: '🔐', title: '系統管理', tag: '6 項功能', color: 'var(--accent-red)',
+              items: ['自動觸發器', '通知管理', '使用者權限', '操作紀錄時間軸', '系統效能監控', '全域設定'],
+            },
+            {
+              icon: '🤖', title: 'AI 工具', tag: '2 項功能', color: 'var(--accent-pink)',
+              items: ['AI 幫助中心', 'Agent 控制台'],
+            },
+            {
+              icon: '📱', title: 'LINE 整合', tag: '員工行動端', color: '#34d399',
+              items: ['LINE 打卡（GPS 驗證）', 'LINE 查薪資', 'LINE 請假查詢', 'LINE 任務回報', 'LINE 查庫存', '排休申請（月曆）', '推播：班表提醒', '推播：低庫存警示', '推播：薪資通知'],
+            },
+          ].map((mod, i) => (
+            <div key={i} style={{
+              background: 'var(--bg-card)', border: '1px solid var(--border-subtle)',
+              borderRadius: 16, padding: '24px', backdropFilter: 'blur(12px)',
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <div style={{
+                    width: 40, height: 40, borderRadius: 12,
+                    background: `${mod.color}15`, border: `1px solid ${mod.color}25`,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20,
+                  }}>{mod.icon}</div>
+                  <div>
+                    <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--text-primary)' }}>{mod.title}</div>
+                  </div>
+                </div>
+                <span style={{
+                  padding: '3px 10px', borderRadius: 20, fontSize: 11, fontWeight: 600,
+                  background: `${mod.color}15`, color: mod.color,
+                }}>{mod.tag}</span>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                {mod.items.map((item, j) => (
+                  <div key={j} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: 'var(--text-secondary)' }}>
+                    <span style={{ width: 4, height: 4, borderRadius: '50%', background: mod.color, flexShrink: 0 }} />
+                    {item}
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Special features */}
+        <div style={{ marginTop: 32 }}>
+          <div style={{ textAlign: 'center', marginBottom: 24 }}>
+            <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--accent-yellow)', letterSpacing: '2px', marginBottom: 8 }}>BONUS</div>
+            <h3 style={{ fontSize: 24, fontWeight: 800, margin: 0, color: 'var(--text-primary)' }}>額外特色功能</h3>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 12 }}>
+            {[
+              { icon: '📊', label: 'Dashboard 即時圖表', desc: '4 張互動式圖表' },
+              { icon: '📄', label: 'PDF 報表匯出', desc: '考勤 / 薪資一鍵下載' },
+              { icon: '🔔', label: '即時通知中心', desc: '待審 / 低庫存 / 逾期' },
+              { icon: '🎯', label: '首次登入導覽', desc: '4 步驟精靈引導設定' },
+              { icon: '📍', label: 'GPS 打卡圍籬', desc: '門市 300m 內才能打卡' },
+              { icon: '👤', label: '員工自助 Portal', desc: '獨立入口查出勤薪資' },
+              { icon: '🌙', label: '深淺色主題切換', desc: '護眼暗色 / 清爽淺色' },
+              { icon: '💬', label: 'LINE Rich Menu', desc: '精緻 6 格快捷選單' },
+            ].map((f, i) => (
+              <div key={i} style={{
+                background: 'var(--bg-card)', border: '1px solid var(--border-subtle)',
+                borderRadius: 14, padding: '18px 16px',
+                display: 'flex', alignItems: 'flex-start', gap: 12,
+              }}>
+                <div style={{ fontSize: 24, lineHeight: 1 }}>{f.icon}</div>
+                <div>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 2 }}>{f.label}</div>
+                  <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>{f.desc}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Stats bar */}
+        <div style={{
+          display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 1,
+          marginTop: 32, background: 'var(--border-subtle)', borderRadius: 14,
+          overflow: 'hidden', border: '1px solid var(--border-subtle)',
+        }}>
+          {[
+            { value: '54', label: '功能頁面' },
+            { value: '23', label: '資料表' },
+            { value: '8', label: '系統模組' },
+            { value: '9', label: 'LINE 指令' },
+            { value: '3', label: '推播類型' },
+          ].map((s, i) => (
+            <div key={i} style={{ background: 'var(--bg-card)', padding: '20px', textAlign: 'center' }}>
+              <div style={{ fontSize: 28, fontWeight: 800, color: 'var(--accent-cyan)' }}>{s.value}</div>
+              <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 4 }}>{s.label}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════
+          SECTION 6: 聯繫我們
          ══════════════════════════════════════════ */}
       <section style={{ padding: '80px 40px', background: 'var(--bg-secondary)' }}>
         <div style={{ maxWidth: 720, margin: '0 auto' }}>
