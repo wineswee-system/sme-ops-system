@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Download, ChevronDown, ChevronRight, Plus } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
+import { exportSalaryPdf } from '../../lib/exportPdf'
 import LoadingSpinner from '../../components/LoadingSpinner'
 import Modal, { Field } from '../../components/Modal'
 
@@ -119,7 +120,7 @@ export default function Salary() {
           <div style={{ display: 'flex', gap: 8 }}>
             <input type="month" className="form-input" value={month} onChange={e => setMonth(e.target.value)} style={{ fontSize: 13 }} />
             <button className="btn btn-primary" onClick={() => setShowModal(true)}><Plus size={14} /> 新增薪資</button>
-            <button className="btn btn-secondary"><Download size={14} /> 匯出薪資單</button>
+            <button className="btn btn-secondary" onClick={() => exportSalaryPdf(filtered, month)}><Download size={14} /> 匯出 PDF</button>
           </div>
         </div>
       </div>

@@ -1,6 +1,8 @@
+import { useState } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider } from './contexts/AuthContext'
 import Sidebar from './components/Sidebar'
+import OnboardingWizard from './components/OnboardingWizard'
 import DemoLanding from './pages/DemoLanding'
 import Dashboard from './pages/Dashboard'
 import Analytics from './pages/Analytics'
@@ -51,10 +53,15 @@ import Inbound from './pages/wms/Inbound'
 import Inventory from './pages/wms/Inventory'
 import Outbound from './pages/wms/Outbound'
 import WMSReports from './pages/wms/Reports'
+import PortalLayout from './pages/portal/PortalLayout'
+import PortalHome from './pages/portal/PortalHome'
 
 function AdminApp() {
+  const [showOnboarding, setShowOnboarding] = useState(() => !localStorage.getItem('sme_onboarded'))
+
   return (
     <div className="app-layout">
+      {showOnboarding && <OnboardingWizard onComplete={() => setShowOnboarding(false)} />}
       <Sidebar />
       <main className="main-content">
         <div className="page-container">
@@ -128,6 +135,9 @@ export default function App() {
     <AuthProvider>
       <Routes>
         <Route path="/demo" element={<DemoLanding />} />
+        <Route path="/portal" element={<PortalLayout />}>
+          <Route index element={<PortalHome />} />
+        </Route>
         <Route path="/*" element={<AdminApp />} />
       </Routes>
     </AuthProvider>

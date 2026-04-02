@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Search, Download } from 'lucide-react'
 import { getAttendance } from '../../lib/db'
 import { supabase } from '../../lib/supabase'
+import { exportAttendancePdf } from '../../lib/exportPdf'
 import LoadingSpinner from '../../components/LoadingSpinner'
 
 export default function Attendance() {
@@ -52,7 +53,7 @@ export default function Attendance() {
             <h2><span className="header-icon">⏰</span> 打卡追蹤</h2>
             <p>員工每日出缺勤即時追蹤</p>
           </div>
-          <button className="btn btn-secondary"><Download size={14} /> 匯出</button>
+          <button className="btn btn-secondary" onClick={() => exportAttendancePdf(filtered, { dept: deptFilter })}><Download size={14} /> 匯出 PDF</button>
         </div>
       </div>
 
