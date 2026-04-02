@@ -272,8 +272,8 @@ export default function Dashboard() {
           <div className="card-header">
             <div className="card-title"><span className="card-title-icon"><Target size={14} /></span> 任務完成狀態</div>
           </div>
-          <div style={{ height: 260, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 8px 8px' }}>
-            <div style={{ width: 220, height: 220, position: 'relative' }}>
+          <div style={{ padding: '8px 8px 0', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <div style={{ width: 180, height: 180, position: 'relative' }}>
               <Doughnut
                 data={taskDoughnutData}
                 options={{
@@ -281,7 +281,7 @@ export default function Dashboard() {
                   cutout: '65%',
                   plugins: {
                     ...chartDefaults.plugins,
-                    legend: { ...chartDefaults.plugins.legend, position: 'right' },
+                    legend: { display: false },
                   },
                 }}
               />
@@ -292,6 +292,20 @@ export default function Dashboard() {
                 <div style={{ fontSize: 28, fontWeight: 800, color: 'var(--text-primary)' }}>{workflowProgress}%</div>
                 <div style={{ fontSize: 10, color: 'var(--text-muted)' }}>完成率</div>
               </div>
+            </div>
+            {/* Custom legend */}
+            <div style={{ display: 'flex', gap: 16, padding: '14px 0 12px' }}>
+              {[
+                { label: '已完成', color: chartColors.green, value: completedTasks },
+                { label: '進行中', color: chartColors.blue, value: inProgressTasks },
+                { label: '未開始', color: chartColors.orange, value: notStartedTasks },
+              ].map(l => (
+                <div key={l.label} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <div style={{ width: 8, height: 8, borderRadius: '50%', background: l.color }} />
+                  <span style={{ fontSize: 11, color: 'var(--text-secondary)' }}>{l.label}</span>
+                  <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-primary)' }}>{l.value}</span>
+                </div>
+              ))}
             </div>
           </div>
         </div>
