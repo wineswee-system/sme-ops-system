@@ -8,7 +8,7 @@ export default function Locations() {
   const [stores, setStores] = useState([])
   const [loading, setLoading] = useState(true)
   const [showModal, setShowModal] = useState(false)
-  const [form, setForm] = useState({ name: '', company: '', address: '', phone: '', manager: '', status: '營運中', lat: '', lng: '', clock_radius: 300 })
+  const [form, setForm] = useState({ name: '', company: '', address: '', phone: '', manager: '', status: '營運中', lat: '', lng: '', clock_radius: 150, allowed_wifi: '' })
 
   useEffect(() => {
     getStores().then(({ data }) => { setStores(data || []); setLoading(false) })
@@ -23,13 +23,14 @@ export default function Locations() {
       employee_count: 0,
       lat: form.lat ? parseFloat(form.lat) : null,
       lng: form.lng ? parseFloat(form.lng) : null,
-      clock_radius: parseInt(form.clock_radius) || 300,
+      clock_radius: parseInt(form.clock_radius) || 150,
+      allowed_wifi: form.allowed_wifi ? form.allowed_wifi.split(',').map(s => s.trim()).filter(Boolean) : null,
     }
     const { data } = await createStore(payload)
     if (data) {
       setStores(prev => [...prev, data])
       setShowModal(false)
-      setForm({ name: '', company: '', address: '', phone: '', manager: '', status: '營運中', lat: '', lng: '', clock_radius: 300 })
+      setForm({ name: '', company: '', address: '', phone: '', manager: '', status: '營運中', lat: '', lng: '', clock_radius: 150, allowed_wifi: '' })
     }
   }
 
@@ -139,6 +140,15 @@ export default function Locations() {
             </div>
             <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 4 }}>
               提示：可從 Google Maps 右鍵取得座標。員工需在設定範圍內才能打卡。
+            </div>
+          </div>
+          <div style={{ borderTop: '1px solid var(--border-subtle)', margin: '8px 0', paddingTop: 12 }}>
+            <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-secondary)', marginBottom: 10 }}>WiFi IP 白名單</div>
+            <Field label="允許的 IP 位址（逗號分隔）">
+              <input className="form-input" type="text" style={{ width: '100%' }} placeholder="203.69.180.0/24, 61.220.45.0/24" value={form.allowed_wifi} onChange={e => set('allowed_wifi', e.target.value)} />
+            </Field>
+            <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 4 }}>
+              填入門市 WiFi 的公共 IP 或網段。員工連上門市 WiFi 時，IP 符合即可打卡（與 GPS 擇一通過即可）。
             </div>
           </div>
         </Modal>
