@@ -23,15 +23,15 @@ const navSections = [
   {
     label: '主選單',
     items: [
-      { icon: LayoutDashboard, label: '儀表板', path: '/' },
-      { icon: BarChart3, label: '營運看板', path: '/analytics' },
+      { icon: LayoutDashboard, label: '儀表板', path: '/', color: '#22d3ee' },
+      { icon: BarChart3, label: '營運看板', path: '/analytics', color: '#3b82f6' },
     ]
   },
   {
     label: '人資管理',
     items: [
       {
-        icon: Users, label: '人資管理', path: '/hr',
+        icon: Users, label: '人資管理', path: '/hr', color: '#22d3ee',
         children: [
           { icon: BarChart3, label: 'HR 報表', path: '/hr/report' },
           { icon: Clock, label: '打卡追蹤', path: '/hr/attendance' },
@@ -56,7 +56,7 @@ const navSections = [
     label: '流程管理',
     items: [
       {
-        icon: GitBranch, label: '流程管理', path: '/process',
+        icon: GitBranch, label: '流程管理', path: '/process', color: '#a78bfa',
         children: [
           { icon: Eye, label: '總覽', path: '/process/overview' },
           { icon: Workflow, label: '流程', path: '/process/workflows' },
@@ -71,7 +71,7 @@ const navSections = [
     label: '組織管理',
     items: [
       {
-        icon: Building2, label: '組織管理', path: '/org',
+        icon: Building2, label: '組織管理', path: '/org', color: '#fb923c',
         children: [
           { icon: Eye, label: '總覽', path: '/org/overview' },
           { icon: Network, label: '組織', path: '/org/chart' },
@@ -89,7 +89,7 @@ const navSections = [
     label: 'CRM 客戶管理',
     items: [
       {
-        icon: Handshake, label: 'CRM 客戶管理', path: '/crm',
+        icon: Handshake, label: 'CRM 客戶管理', path: '/crm', color: '#3b82f6',
         children: [
           { icon: Eye, label: '總覽', path: '/crm/overview' },
           { icon: Users, label: '客戶管理', path: '/crm/customers' },
@@ -104,7 +104,7 @@ const navSections = [
     label: 'WMS 倉儲管理',
     items: [
       {
-        icon: Warehouse, label: 'WMS 倉儲管理', path: '/wms',
+        icon: Warehouse, label: 'WMS 倉儲管理', path: '/wms', color: '#34d399',
         children: [
           { icon: BarChart2, label: '倉庫總覽', path: '/wms/overview' },
           { icon: Package, label: '商品主檔', path: '/wms/skus' },
@@ -122,7 +122,7 @@ const navSections = [
     label: '採購管理',
     items: [
       {
-        icon: ShoppingCart, label: '採購管理', path: '/purchase',
+        icon: ShoppingCart, label: '採購管理', path: '/purchase', color: '#fbbf24',
         children: [
           { icon: Users, label: '供應商', path: '/purchase/suppliers' },
           { icon: ClipboardList, label: '採購申請', path: '/purchase/requests' },
@@ -137,7 +137,7 @@ const navSections = [
     label: '財務會計',
     items: [
       {
-        icon: CreditCard, label: '財務會計', path: '/finance',
+        icon: CreditCard, label: '財務會計', path: '/finance', color: '#34d399',
         children: [
           { icon: Eye, label: '財務總覽', path: '/finance/overview' },
           { icon: BookText, label: '傳票管理', path: '/finance/journal' },
@@ -153,7 +153,7 @@ const navSections = [
     label: '製造 & 品質',
     items: [
       {
-        icon: Settings, label: '製造管理', path: '/manufacturing',
+        icon: Settings, label: '製造管理', path: '/manufacturing', color: '#f87171',
         children: [
           { icon: ClipboardList, label: 'BOM 物料清單', path: '/manufacturing/bom' },
           { icon: BarChart3, label: 'MRP 需求計畫', path: '/manufacturing/mrp' },
@@ -166,19 +166,19 @@ const navSections = [
   {
     label: '系統',
     items: [
-      { icon: Zap, label: '觸發器', path: '/system/triggers' },
-      { icon: Bell, label: '通知管理', path: '/system/notifications' },
-      { icon: UserCog, label: '使用者管理', path: '/system/users' },
-      { icon: ScrollText, label: '操作紀錄', path: '/system/audit' },
-      { icon: Award, label: '績效管理', path: '/system/performance' },
-      { icon: Settings, label: '系統設定', path: '/system/settings' },
+      { icon: Zap, label: '觸發器', path: '/system/triggers', color: '#fbbf24' },
+      { icon: Bell, label: '通知管理', path: '/system/notifications', color: '#fb923c' },
+      { icon: UserCog, label: '使用者管理', path: '/system/users', color: '#a78bfa' },
+      { icon: ScrollText, label: '操作紀錄', path: '/system/audit', color: '#64748b' },
+      { icon: Award, label: '績效管理', path: '/system/performance', color: '#f472b6' },
+      { icon: Settings, label: '系統設定', path: '/system/settings', color: '#94a3b8' },
     ]
   },
   {
     label: 'AI 工具',
     items: [
-      { icon: BookOpen, label: '說明中心', path: '/ai/help' },
-      { icon: Bot, label: 'Agent 控制台', path: '/ai/agent' },
+      { icon: BookOpen, label: '說明中心', path: '/ai/help', color: '#22d3ee' },
+      { icon: Bot, label: 'Agent 控制台', path: '/ai/agent', color: '#f472b6' },
     ]
   },
 ]
@@ -260,7 +260,7 @@ export default function Sidebar() {
                       className={`nav-item ${isActive(item.path) ? 'active' : ''}`}
                       onClick={() => toggleMenu(item.path)}
                     >
-                      <Icon className="nav-item-icon" />
+                      <Icon className="nav-item-icon" style={item.color ? { color: item.color, background: `${item.color}15`, opacity: 1 } : undefined} />
                       <span>{item.label}</span>
                       <ChevronRight className={`nav-item-chevron ${menuOpen ? 'open' : ''}`} />
                     </div>
@@ -289,7 +289,7 @@ export default function Sidebar() {
                   key={ii}
                   className={({ isActive: active }) => `nav-item ${active ? 'active' : ''}`}
                 >
-                  <Icon className="nav-item-icon" />
+                  <Icon className="nav-item-icon" style={item.color ? { color: item.color, background: `${item.color}15`, opacity: 1 } : undefined} />
                   <span>{item.label}</span>
                 </NavLink>
               )
