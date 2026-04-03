@@ -40,6 +40,14 @@ const 核心模組_INTRO = [
     features: ['進貨 / 出貨管理', '即時庫存追蹤', '批號與效期管理', '盤點作業', '出貨自動拋帳款', '低庫存自動預警'], tag: '倉儲',
   },
   {
+    icon: '🧾', title: '銷售管理', color: 'var(--accent-pink)', dim: 'var(--accent-pink-dim)',
+    features: ['報價單（版本管理）', '報價轉訂單一鍵完成', '促銷活動引擎', '退貨與折讓管理', '信用額度管控', '銷售預測分析'], tag: '銷售',
+  },
+  {
+    icon: '🖥️', title: 'POS 收銀', color: 'var(--accent-cyan)', dim: 'var(--accent-cyan-dim)',
+    features: ['收銀台結帳介面', '多元支付（現金/卡/行動）', '交班日結（現金核對）', '會員點數折抵', '電子發票', '離線模式支援'], tag: 'POS',
+  },
+  {
     icon: '🛒', title: '採購管理', color: 'var(--accent-yellow)', dim: 'var(--accent-yellow-dim)',
     features: ['供應商管理與評等', '採購申請（動態簽核）', '採購單追蹤', '進貨驗收', '合約管理', '庫存不足自動建議'], tag: '採購',
   },
@@ -89,8 +97,8 @@ const 跨系統串接S = [
 ]
 
 const STATS = [
-  { label: '功能模組', value: 12, suffix: '' },
-  { label: '功能頁面', value: 80, suffix: '+' },
+  { label: '功能模組', value: 14, suffix: '' },
+  { label: '功能頁面', value: 90, suffix: '+' },
   { label: '跨模組整合', value: 6, suffix: '項' },
   { label: '資料表串接', value: 30, suffix: '+' },
 ]
@@ -185,6 +193,20 @@ const systems = [
     icon: Bot, accent: 'var(--accent-pink)', accentDim: 'var(--accent-pink-dim)',
     glow: 'rgba(244, 114, 182, 0.2)', path: '/ai/help',
     features: ['幫助中心', 'Agent 控制台'], moduleCount: 2,
+  },
+  {
+    id: 'sales', title: '銷售管理', subtitle: '報價到成交',
+    description: '報價單版本管理、一鍵轉訂單、促銷活動引擎、退貨折讓，完整的接單流程。',
+    icon: Settings, accent: 'var(--accent-pink)', accentDim: 'var(--accent-pink-dim)',
+    glow: 'rgba(244, 114, 182, 0.2)', path: '/sales/quotations',
+    features: ['報價管理', '銷售訂單', '促銷活動', '退貨管理'], moduleCount: 4,
+  },
+  {
+    id: 'pos', title: 'POS 收銀', subtitle: '門市結帳',
+    description: '收銀台結帳介面、多元支付整合、交班日結、會員點數折抵。',
+    icon: LayoutDashboard, accent: 'var(--accent-cyan)', accentDim: 'var(--accent-cyan-dim)',
+    glow: 'rgba(34, 211, 238, 0.2)', path: '/pos/terminal',
+    features: ['收銀台', '交班日結'], moduleCount: 2,
   },
   {
     id: 'purchase', title: '採購管理', subtitle: '供應商與進貨',
@@ -769,6 +791,14 @@ export default function DemoLanding() {
               items: ['倉庫營運總覽', '商品主檔管理', '進貨入庫作業', '庫存即時追蹤（異動自動寫入稽核日誌）', '出貨管理（出貨自動拋轉應收帳款）', '異常報表與分析', '批號追蹤（效期管理/過期預警）', '盤點作業（差異管理/盤盈盤虧）'],
             },
             {
+              icon: '🧾', title: '銷售管理', tag: '4 項功能', color: 'var(--accent-pink)',
+              items: ['報價單（版本管理 v1/v2，一鍵轉訂單）', '銷售訂單（信用額度自動檢核）', '促銷引擎（滿額折/階梯折/VIP價/組合優惠）', '退貨管理（自動沖帳 + 庫存回補）'],
+            },
+            {
+              icon: '🖥️', title: 'POS 收銀系統', tag: '2 項功能', color: 'var(--accent-cyan)',
+              items: ['收銀台（商品搜尋 + 購物車 + 多元支付結帳）', '交班日結（現金核對 / 刷卡對帳 / 溢缺管理）'],
+            },
+            {
               icon: '🛒', title: '採購管理', tag: '5 項功能', color: 'var(--accent-yellow)',
               items: ['供應商管理（評等與付款條件）', '採購申請（主管動態簽核）', '採購單追蹤（庫存不足自動建議）', '進貨驗收（驗收完自動產生應付帳款）', '合約管理（折扣/最低訂量/效期）'],
             },
@@ -876,8 +906,8 @@ export default function DemoLanding() {
           overflow: 'hidden', border: '1px solid var(--border-subtle)',
         }}>
           {[
-            { value: '80+', label: '功能頁面' },
-            { value: '42+', label: '資料表' },
+            { value: '90+', label: '功能頁面' },
+            { value: '48+', label: '資料表' },
             { value: '12', label: '大模組' },
             { value: '14', label: '法定假別' },
             { value: '50+', label: '法規條文' },

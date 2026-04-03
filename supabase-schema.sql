@@ -571,6 +571,124 @@ create table insurance_settings (
   created_at timestamptz default now()
 );
 
+-- ============================================================
+--  銷售與 POS (Sales & POS)
+-- ============================================================
+
+-- 報價單 (Quotations)
+create table quotations (
+  id serial primary key,
+  quote_number text unique,
+  version int default 1,
+  customer text,
+  contact_person text,
+  items jsonb default '[]',
+  subtotal numeric default 0,
+  discount numeric default 0,
+  tax numeric default 0,
+  total numeric default 0,
+  valid_until date,
+  notes text,
+  status text default '草稿',
+  created_by text,
+  converted_order_id int,
+  created_at timestamptz default now()
+);
+
+-- 銷售訂單 (Sales Orders)
+create table sales_orders (
+  id serial primary key,
+  order_number text unique,
+  quote_id int references quotations(id),
+  customer text,
+  items jsonb default '[]',
+  subtotal numeric default 0,
+  discount numeric default 0,
+  tax numeric default 0,
+  total numeric default 0,
+  payment_status text default '未付款',
+  shipping_status text default '未出貨',
+  credit_check text default '通過',
+  notes text,
+  created_by text,
+  created_at timestamptz default now()
+);
+
+-- 促銷活動 (Promotions)
+create table promotions (
+  id serial primary key,
+  name text not null,
+  type text not null,
+  rules jsonb default '{}',
+  start_date date,
+  end_date date,
+  applicable_to text default '全部',
+  min_amount numeric default 0,
+  discount_value numeric default 0,
+  discount_type text default 'percent',
+  max_uses int,
+  used_count int default 0,
+  status text default '啟用',
+  created_at timestamptz default now()
+);
+
+-- POS 交易 (POS Transactions)
+create table pos_transactions (
+  id serial primary key,
+  transaction_number text unique,
+  store text,
+  cashier text,
+  items jsonb default '[]',
+  subtotal numeric default 0,
+  discount numeric default 0,
+  tax numeric default 0,
+  total numeric default 0,
+  payment_method text default '現金',
+  payment_ref text,
+  member_id text,
+  points_earned int default 0,
+  points_used int default 0,
+  invoice_number text,
+  invoice_carrier text,
+  status text default '完成',
+  created_at timestamptz default now()
+);
+
+-- POS 交班日結 (Shift Settlement)
+create table pos_shifts (
+  id serial primary key,
+  store text,
+  cashier text,
+  shift_start timestamptz,
+  shift_end timestamptz,
+  opening_cash numeric default 0,
+  closing_cash numeric default 0,
+  expected_cash numeric default 0,
+  cash_difference numeric default 0,
+  total_sales numeric default 0,
+  total_transactions int default 0,
+  card_total numeric default 0,
+  mobile_pay_total numeric default 0,
+  status text default '營業中',
+  notes text,
+  created_at timestamptz default now()
+);
+
+-- 退貨單 (Returns)
+create table returns (
+  id serial primary key,
+  return_number text unique,
+  original_order text,
+  customer text,
+  items jsonb default '[]',
+  total_refund numeric default 0,
+  reason text,
+  refund_method text default '原路退回',
+  status text default '待處理',
+  processed_by text,
+  created_at timestamptz default now()
+);
+
 -- Inquiries (demo contact form)
 create table inquiries (
   id serial primary key,

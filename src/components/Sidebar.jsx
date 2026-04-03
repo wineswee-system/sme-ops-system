@@ -10,7 +10,8 @@ import {
   ScrollText, Settings, BookOpen, Bot, Award, LogOut, Sun, Moon,
   Warehouse, PackageOpen, Truck, BarChart2, Package,
   Handshake, TrendingUp, Megaphone, HeadphonesIcon, Sparkles,
-  ShoppingCart, CreditCard, BookText, FileCheck
+  ShoppingCart, CreditCard, BookText, FileCheck,
+  FileEdit, Tag, Monitor, RotateCcw
 } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
 import NotificationCenter from './NotificationCenter'
@@ -114,6 +115,32 @@ const navSections = [
           { icon: BarChart2, label: '異常與報表', path: '/wms/reports' },
           { icon: Package, label: '批號追蹤', path: '/wms/lots' },
           { icon: CheckSquare, label: '盤點作業', path: '/wms/stock-count' },
+        ]
+      }
+    ]
+  },
+  {
+    label: '銷售管理',
+    items: [
+      {
+        icon: FileEdit, label: '銷售管理', path: '/sales', color: '#f472b6',
+        children: [
+          { icon: FileText, label: '報價管理', path: '/sales/quotations' },
+          { icon: ClipboardList, label: '銷售訂單', path: '/sales/orders' },
+          { icon: Tag, label: '促銷活動', path: '/sales/promotions' },
+          { icon: RotateCcw, label: '退貨管理', path: '/sales/returns' },
+        ]
+      }
+    ]
+  },
+  {
+    label: 'POS 收銀',
+    items: [
+      {
+        icon: Monitor, label: 'POS 系統', path: '/pos', color: '#22d3ee',
+        children: [
+          { icon: Monitor, label: '收銀台', path: '/pos/terminal' },
+          { icon: DollarSign, label: '交班日結', path: '/pos/shifts' },
         ]
       }
     ]

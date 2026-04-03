@@ -72,6 +72,12 @@ import BankReconciliation from './pages/finance/BankReconciliation'
 import ManufacturingOrders from './pages/manufacturing/ManufacturingOrders'
 import Lots from './pages/wms/Lots'
 import StockCount from './pages/wms/StockCount'
+import Quotations from './pages/sales/Quotations'
+import SalesOrders from './pages/sales/SalesOrders'
+import Promotions from './pages/sales/Promotions'
+import Returns from './pages/sales/Returns'
+import POSTerminal from './pages/pos/POSTerminal'
+import POSShifts from './pages/pos/POSShifts'
 
 function AdminApp() {
   const [showOnboarding, setShowOnboarding] = useState(() => !localStorage.getItem('sme_onboarded'))
@@ -141,6 +147,14 @@ function AdminApp() {
             <Route path="/wms/reports" element={<WMSReports />} />
             <Route path="/wms/lots" element={<Lots />} />
             <Route path="/wms/stock-count" element={<StockCount />} />
+            {/* Sales */}
+            <Route path="/sales/quotations" element={<Quotations />} />
+            <Route path="/sales/orders" element={<SalesOrders />} />
+            <Route path="/sales/promotions" element={<Promotions />} />
+            <Route path="/sales/returns" element={<Returns />} />
+            {/* POS */}
+            <Route path="/pos/terminal" element={<POSTerminal />} />
+            <Route path="/pos/shifts" element={<POSShifts />} />
             {/* Purchase */}
             <Route path="/purchase/suppliers" element={<Suppliers />} />
             <Route path="/purchase/requests" element={<PurchaseRequests />} />

@@ -279,3 +279,31 @@ export const createStockCount = (data) =>
   supabase.from('stock_counts').insert(data).select().single()
 export const getInsuranceSettings = () =>
   supabase.from('insurance_settings').select('*').order('id')
+
+// ── Sales & POS ──
+export const getQuotations = () =>
+  supabase.from('quotations').select('*').order('id', { ascending: false })
+export const createQuotation = (data) =>
+  supabase.from('quotations').insert(data).select().single()
+export const updateQuotation = (id, data) =>
+  supabase.from('quotations').update(data).eq('id', id).select().single()
+export const getSalesOrders = () =>
+  supabase.from('sales_orders').select('*').order('id', { ascending: false })
+export const createSalesOrder = (data) =>
+  supabase.from('sales_orders').insert(data).select().single()
+export const getPromotions = () =>
+  supabase.from('promotions').select('*').order('id', { ascending: false })
+export const createPromotion = (data) =>
+  supabase.from('promotions').insert(data).select().single()
+export const getPOSTransactions = () =>
+  supabase.from('pos_transactions').select('*').order('id', { ascending: false })
+export const createPOSTransaction = (data) =>
+  supabase.from('pos_transactions').insert(data).select().single()
+export const getPOSShifts = () =>
+  supabase.from('pos_shifts').select('*').order('id', { ascending: false })
+export const createPOSShift = (data) =>
+  supabase.from('pos_shifts').insert(data).select().single()
+export const getReturns = () =>
+  supabase.from('returns').select('*').order('id', { ascending: false })
+export const createReturn = (data) =>
+  supabase.from('returns').insert(data).select().single()
