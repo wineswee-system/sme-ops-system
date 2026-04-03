@@ -202,10 +202,21 @@ export default function Sidebar() {
   return (
     <aside className="sidebar">
       <div className="sidebar-brand">
-        <div className="sidebar-brand-icon">AI</div>
+        <div className="sidebar-brand-icon" style={{ background: 'linear-gradient(135deg, #22d3ee, #3b82f6, #a78bfa)', boxShadow: '0 4px 16px rgba(34,211,238,0.3)' }}>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <rect x="3" y="3" width="7" height="7" rx="1.5"/>
+            <rect x="14" y="3" width="7" height="7" rx="1.5"/>
+            <rect x="3" y="14" width="7" height="7" rx="1.5"/>
+            <rect x="14" y="14" width="7" height="7" rx="1.5"/>
+            <path d="M10 6.5h4" opacity="0.5"/>
+            <path d="M6.5 10v4" opacity="0.5"/>
+            <path d="M17.5 10v4" opacity="0.5"/>
+            <path d="M10 17.5h4" opacity="0.5"/>
+          </svg>
+        </div>
         <div className="sidebar-brand-text" style={{ flex: 1, minWidth: 0 }}>
           <h1>SME Ops</h1>
-          <span>Operations System</span>
+          <span>智慧營運系統</span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
           <button
