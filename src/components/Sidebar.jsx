@@ -26,6 +26,7 @@ const navSections = [
     items: [
       { icon: LayoutDashboard, label: '儀表板', path: '/', color: '#22d3ee' },
       { icon: BarChart3, label: '營運看板', path: '/analytics', color: '#3b82f6' },
+      { icon: TrendingUp, label: '銷售預測', path: '/analytics/forecast', color: '#a78bfa' },
     ]
   },
   {
@@ -97,6 +98,7 @@ const navSections = [
           { icon: TrendingUp, label: '銷售漏斗', path: '/crm/pipeline' },
           { icon: Megaphone, label: '行銷自動化', path: '/crm/marketing' },
           { icon: HeadphonesIcon, label: '客服工單', path: '/crm/service' },
+          { icon: Award, label: '會員管理', path: '/crm/members' },
         ]
       }
     ]
@@ -129,6 +131,7 @@ const navSections = [
           { icon: ClipboardList, label: '銷售訂單', path: '/sales/orders' },
           { icon: Tag, label: '促銷活動', path: '/sales/promotions' },
           { icon: RotateCcw, label: '退貨管理', path: '/sales/returns' },
+          { icon: Truck, label: '物流追蹤', path: '/sales/shipments' },
         ]
       }
     ]
@@ -172,6 +175,7 @@ const navSections = [
           { icon: Receipt, label: '應付帳款', path: '/finance/ap' },
           { icon: BarChart3, label: '預算管理', path: '/finance/budgets' },
           { icon: CreditCard, label: '銀行對帳', path: '/finance/bank' },
+          { icon: FileText, label: '電子發票', path: '/finance/invoices' },
         ]
       }
     ]

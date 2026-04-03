@@ -78,6 +78,10 @@ import Promotions from './pages/sales/Promotions'
 import Returns from './pages/sales/Returns'
 import POSTerminal from './pages/pos/POSTerminal'
 import POSShifts from './pages/pos/POSShifts'
+import Shipments from './pages/sales/Shipments'
+import Members from './pages/crm/Members'
+import Invoices from './pages/finance/Invoices'
+import SalesForecast from './pages/analytics/SalesForecast'
 
 function AdminApp() {
   const [showOnboarding, setShowOnboarding] = useState(() => !localStorage.getItem('sme_onboarded'))
@@ -91,6 +95,7 @@ function AdminApp() {
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/analytics" element={<Analytics />} />
+            <Route path="/analytics/forecast" element={<SalesForecast />} />
             {/* HR */}
             <Route path="/hr/report" element={<HRReport />} />
             <Route path="/hr/attendance" element={<Attendance />} />
@@ -138,6 +143,7 @@ function AdminApp() {
             <Route path="/crm/pipeline" element={<Pipeline />} />
             <Route path="/crm/marketing" element={<CRMMarketing />} />
             <Route path="/crm/service" element={<CRMService />} />
+            <Route path="/crm/members" element={<Members />} />
             {/* WMS */}
             <Route path="/wms/overview" element={<WMSOverview />} />
             <Route path="/wms/skus" element={<SKUs />} />
@@ -152,6 +158,7 @@ function AdminApp() {
             <Route path="/sales/orders" element={<SalesOrders />} />
             <Route path="/sales/promotions" element={<Promotions />} />
             <Route path="/sales/returns" element={<Returns />} />
+            <Route path="/sales/shipments" element={<Shipments />} />
             {/* POS */}
             <Route path="/pos/terminal" element={<POSTerminal />} />
             <Route path="/pos/shifts" element={<POSShifts />} />
@@ -168,6 +175,7 @@ function AdminApp() {
             <Route path="/finance/ap" element={<AccountsPayable />} />
             <Route path="/finance/budgets" element={<Budgets />} />
             <Route path="/finance/bank" element={<BankReconciliation />} />
+            <Route path="/finance/invoices" element={<Invoices />} />
             {/* Manufacturing & QM */}
             <Route path="/manufacturing/bom" element={<BOM />} />
             <Route path="/manufacturing/mrp" element={<MRP />} />

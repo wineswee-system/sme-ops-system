@@ -307,3 +307,25 @@ export const getReturns = () =>
   supabase.from('returns').select('*').order('id', { ascending: false })
 export const createReturn = (data) =>
   supabase.from('returns').insert(data).select().single()
+
+// ── Logistics, Membership, E-Invoice ──
+export const getShipments = () =>
+  supabase.from('shipments').select('*').order('id', { ascending: false })
+export const createShipment = (data) =>
+  supabase.from('shipments').insert(data).select().single()
+export const updateShipment = (id, data) =>
+  supabase.from('shipments').update(data).eq('id', id).select().single()
+export const getMembers = () =>
+  supabase.from('members').select('*').order('id', { ascending: false })
+export const createMember = (data) =>
+  supabase.from('members').insert(data).select().single()
+export const getPointTransactions = (memberId) =>
+  supabase.from('point_transactions').select('*').eq('member_id', memberId).order('id', { ascending: false })
+export const createPointTransaction = (data) =>
+  supabase.from('point_transactions').insert(data).select().single()
+export const getInvoices = () =>
+  supabase.from('invoices').select('*').order('id', { ascending: false })
+export const createInvoice = (data) =>
+  supabase.from('invoices').insert(data).select().single()
+export const updateInvoice = (id, data) =>
+  supabase.from('invoices').update(data).eq('id', id).select().single()

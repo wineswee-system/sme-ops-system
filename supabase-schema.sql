@@ -689,6 +689,82 @@ create table returns (
   created_at timestamptz default now()
 );
 
+-- ============================================================
+--  物流、會員、發票 (Logistics, Membership, E-Invoice)
+-- ============================================================
+
+-- 物流追蹤 (Shipment Tracking)
+create table shipments (
+  id serial primary key,
+  shipment_number text unique,
+  order_ref text,
+  carrier text,
+  tracking_number text,
+  origin text,
+  destination text,
+  recipient text,
+  recipient_phone text,
+  items jsonb default '[]',
+  estimated_date date,
+  actual_date date,
+  status text default '待出貨',
+  timeline jsonb default '[]',
+  created_at timestamptz default now()
+);
+
+-- 會員與點數 (Membership & Points)
+create table members (
+  id serial primary key,
+  member_number text unique,
+  name text not null,
+  phone text,
+  email text,
+  level text default '一般',
+  total_points int default 0,
+  available_points int default 0,
+  total_spent numeric default 0,
+  visit_count int default 0,
+  birthday date,
+  join_date date default current_date,
+  last_visit date,
+  status text default '有效',
+  created_at timestamptz default now()
+);
+
+-- 點數異動紀錄
+create table point_transactions (
+  id serial primary key,
+  member_id int references members(id),
+  type text not null,
+  points int not null,
+  balance int,
+  reference text,
+  description text,
+  created_at timestamptz default now()
+);
+
+-- 電子發票 (E-Invoice)
+create table invoices (
+  id serial primary key,
+  invoice_number text unique,
+  invoice_date date,
+  seller_tax_id text,
+  buyer_tax_id text,
+  buyer_name text,
+  items jsonb default '[]',
+  subtotal numeric default 0,
+  tax numeric default 0,
+  total numeric default 0,
+  carrier_type text,
+  carrier_id text,
+  donate_code text,
+  status text default '已開立',
+  void_reason text,
+  pos_transaction_id int,
+  order_ref text,
+  created_at timestamptz default now()
+);
+
 -- Inquiries (demo contact form)
 create table inquiries (
   id serial primary key,
