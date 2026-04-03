@@ -1,23 +1,28 @@
 import { useState, useEffect } from 'react'
-import { TrendingUp, TrendingDown, DollarSign, AlertTriangle } from 'lucide-react'
+import { TrendingUp, TrendingDown, DollarSign, AlertTriangle, BarChart3 } from 'lucide-react'
 import { getAccounts, getAccountsReceivable, getAccountsPayable } from '../../lib/db'
+import { calculateProfitability } from '../../lib/automation'
 import LoadingSpinner from '../../components/LoadingSpinner'
 
 export default function Overview() {
   const [accounts, setAccounts] = useState([])
   const [ar, setAr] = useState([])
   const [ap, setAp] = useState([])
+  const [profit, setProfit] = useState(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    const month = new Date().toISOString().slice(0, 7)
     Promise.all([
       getAccounts(),
       getAccountsReceivable(),
       getAccountsPayable(),
-    ]).then(([a, r, p]) => {
+      calculateProfitability(month),
+    ]).then(([a, r, p, prof]) => {
       setAccounts(a.data || [])
       setAr(r.data || [])
       setAp(p.data || [])
+      setProfit(prof)
       setLoading(false)
     })
   }, [])
@@ -92,6 +97,44 @@ export default function Overview() {
           <div className="stat-card-value">NT$ {apPaid.toLocaleString()}</div>
         </div>
       </div>
+
+      {/* 成本核算 Profitability */}
+      {profit && (
+        <div className="stat-grid" style={{ gridTemplateColumns: 'repeat(6, 1fr)', marginTop: 8 }}>
+          <div className="stat-card" style={{ '--card-accent': 'var(--accent-green)', '--card-accent-dim': 'var(--accent-green-dim)' }}>
+            <div className="stat-card-icon"><TrendingUp size={16} /></div>
+            <div className="stat-card-label">營收</div>
+            <div className="stat-card-value">NT$ {profit.revenue.toLocaleString()}</div>
+          </div>
+          <div className="stat-card" style={{ '--card-accent': 'var(--accent-orange)', '--card-accent-dim': 'var(--accent-orange-dim)' }}>
+            <div className="stat-card-icon"><DollarSign size={16} /></div>
+            <div className="stat-card-label">進貨成本</div>
+            <div className="stat-card-value">NT$ {profit.purchaseCost.toLocaleString()}</div>
+          </div>
+          <div className="stat-card" style={{ '--card-accent': 'var(--accent-purple)', '--card-accent-dim': 'var(--accent-purple-dim)' }}>
+            <div className="stat-card-icon"><DollarSign size={16} /></div>
+            <div className="stat-card-label">人工成本</div>
+            <div className="stat-card-value">NT$ {profit.laborCost.toLocaleString()}</div>
+          </div>
+          <div className="stat-card" style={{ '--card-accent': 'var(--accent-red)', '--card-accent-dim': 'var(--accent-red-dim)' }}>
+            <div className="stat-card-icon"><TrendingDown size={16} /></div>
+            <div className="stat-card-label">總成本</div>
+            <div className="stat-card-value">NT$ {profit.totalCost.toLocaleString()}</div>
+          </div>
+          <div className="stat-card" style={{ '--card-accent': 'var(--accent-cyan)', '--card-accent-dim': 'var(--accent-cyan-dim)' }}>
+            <div className="stat-card-icon"><BarChart3 size={16} /></div>
+            <div className="stat-card-label">毛利</div>
+            <div className="stat-card-value" style={{ color: profit.grossProfit >= 0 ? 'var(--accent-green)' : 'var(--accent-red)' }}>
+              NT$ {profit.grossProfit.toLocaleString()}
+            </div>
+          </div>
+          <div className="stat-card" style={{ '--card-accent': profit.grossMargin >= 30 ? 'var(--accent-green)' : 'var(--accent-orange)', '--card-accent-dim': profit.grossMargin >= 30 ? 'var(--accent-green-dim)' : 'var(--accent-orange-dim)' }}>
+            <div className="stat-card-icon"><TrendingUp size={16} /></div>
+            <div className="stat-card-label">毛利率</div>
+            <div className="stat-card-value">{profit.grossMargin}%</div>
+          </div>
+        </div>
+      )}
 
       {/* 應收帳款 Aging */}
       <div className="card" style={{ marginTop: 20 }}>

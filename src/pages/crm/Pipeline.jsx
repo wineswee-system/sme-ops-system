@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
-import { Plus } from 'lucide-react'
+import { Plus, AlertTriangle } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
+import { checkStockAndCreatePR, createARFromShipment } from '../../lib/automation'
 import LoadingSpinner from '../../components/LoadingSpinner'
 import Modal, { Field } from '../../components/Modal'
 
@@ -46,9 +47,25 @@ export default function Pipeline() {
     if (data) { setOpps(prev => [data, ...prev]); setShowModal(false); setForm({ customer_name: '', title: '', stage: '初步接觸', amount: '', probability: 10, expected_close: '', assignee: '', notes: '', location_id: '' }) }
   }
 
+  const [autoMsg, setAutoMsg] = useState('')
+
   const updateStage = async (id, stage) => {
     const { data } = await supabase.from('opportunities').update({ stage, probability: PROB_MAP[stage] }).eq('id', id).select().single()
-    if (data) setOpps(prev => prev.map(o => o.id === id ? data : o))
+    if (data) {
+      setOpps(prev => prev.map(o => o.id === id ? data : o))
+      // 贏單觸發自動化
+      if (stage === '贏單' && data.amount > 0) {
+        // 自動產生 AR 應收帳款
+        const ar = await createARFromShipment({
+          customer: data.customer_name,
+          order_ref: `OPP-${data.id}`,
+          total_amount: data.amount,
+          id: data.id,
+        })
+        if (ar) setAutoMsg(`✅ 已自動建立應收帳款 ${ar.invoice_number}（NT$ ${data.amount.toLocaleString()}）`)
+        setTimeout(() => setAutoMsg(''), 5000)
+      }
+    }
   }
 
   if (loading) return <LoadingSpinner />
@@ -71,6 +88,11 @@ export default function Pipeline() {
           <div><h2><span className="header-icon">📈</span> 銷售漏斗</h2><p>商機管理與業績預測</p></div>
           <button className="btn btn-primary" onClick={() => setShowModal(true)}><Plus size={14} /> 新增商機</button>
         </div>
+        {autoMsg && (
+          <div style={{ marginTop: 8, padding: '10px 16px', borderRadius: 10, background: 'var(--accent-green-dim)', color: 'var(--accent-green)', fontSize: 13, fontWeight: 600 }}>
+            {autoMsg}
+          </div>
+        )}
       </div>
 
       {/* 分店篩選 */}

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Plus, ChevronDown, ChevronRight, AlertTriangle } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
+import { createARFromShipment } from '../../lib/automation'
 import LoadingSpinner from '../../components/LoadingSpinner'
 import Modal, { Field } from '../../components/Modal'
 
@@ -54,7 +55,18 @@ export default function Outbound() {
 
   const updateTracking = async (id, tracking_number) => {
     const { data } = await supabase.from('outbound_orders').update({ tracking_number, status: '已出貨' }).eq('id', id).select().single()
-    if (data) setOrders(prev => prev.map(o => o.id === id ? data : o))
+    if (data) {
+      setOrders(prev => prev.map(o => o.id === id ? data : o))
+      // 自動產生 AR 應收帳款
+      if (data.total_amount > 0) {
+        createARFromShipment({
+          customer: data.customer,
+          order_ref: `OUT-${data.id}`,
+          total_amount: data.total_amount,
+          id: data.id,
+        })
+      }
+    }
   }
 
   // CRM 信用管控：查詢客戶欠款狀態
