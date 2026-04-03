@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react'
-import { ChevronLeft, ChevronRight, Sparkles, CalendarOff } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Sparkles, CalendarOff, AlertTriangle, Shield, Info } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
+import { validateSchedule, LABOR_STANDARDS, GENDER_EQUALITY, OCCUPATIONAL_SAFETY } from '../../lib/laborLaw'
 import LoadingSpinner from '../../components/LoadingSpinner'
+import Modal from '../../components/Modal'
 
 const SHIFT_TYPES = [
   { label: '08-17', color: 'var(--accent-cyan)', dim: 'var(--accent-cyan-dim)' },
@@ -40,6 +42,8 @@ export default function Schedule() {
   const [offRequests, setOffRequests] = useState([])
   const [autoScheduling, setAutoScheduling] = useState(false)
   const [minStaff, setMinStaff] = useState(3)
+  const [showLawModal, setShowLawModal] = useState(false)
+  const [compliance, setCompliance] = useState({ errors: [], warnings: [], isValid: true })
 
   const weekDates = getWeekDates(weekOffset)
   const weekStart = weekDates[0]
@@ -67,6 +71,13 @@ export default function Schedule() {
       setOffRequests(o.data || [])
     })
   }, [weekStart])
+
+  // Run compliance check when schedules update
+  useEffect(() => {
+    if (schedules.length > 0) {
+      setCompliance(validateSchedule(schedules, weekDates))
+    }
+  }, [schedules, weekDates])
 
   const getShift = (empName, date) => {
     const s = schedules.find(s => s.employee === empName && s.date === date)
@@ -220,6 +231,9 @@ export default function Schedule() {
                 value={minStaff} onChange={e => setMinStaff(Number(e.target.value) || 1)} min={1} />
               人/天
             </div>
+            <button className="btn btn-secondary" style={{ width: 'auto', padding: '8px 16px' }} onClick={() => setShowLawModal(true)}>
+              <Shield size={14} /> 法規參照
+            </button>
             <button className="btn btn-primary" style={{ width: 'auto', padding: '8px 16px' }}
               onClick={handleAutoSchedule} disabled={autoScheduling}>
               <Sparkles size={14} /> {autoScheduling ? 'AI 排班中...' : 'AI 自動排班'}
@@ -253,6 +267,45 @@ export default function Schedule() {
         <button style={btnStyle(deptFilter === '')} onClick={() => setDeptFilter('')}>全部</button>
         {departments.map(d => <button key={d.id} style={btnStyle(deptFilter === d.name)} onClick={() => setDeptFilter(d.name)}>{d.name}</button>)}
       </div>
+
+      {/* Compliance Alerts */}
+      {(compliance.errors.length > 0 || compliance.warnings.length > 0) && (
+        <div style={{ marginBottom: 16 }}>
+          {compliance.errors.map((e, i) => (
+            <div key={`e-${i}`} style={{
+              display: 'flex', alignItems: 'flex-start', gap: 10, padding: '10px 14px', borderRadius: 10, marginBottom: 6,
+              background: 'var(--accent-red-dim)', border: '1px solid rgba(248,113,113,0.2)',
+            }}>
+              <AlertTriangle size={16} style={{ color: 'var(--accent-red)', flexShrink: 0, marginTop: 2 }} />
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--accent-red)' }}>違規：{e.law}</div>
+                <div style={{ fontSize: 12, color: 'var(--text-secondary)' }}>{e.message}</div>
+              </div>
+            </div>
+          ))}
+          {compliance.warnings.map((w, i) => (
+            <div key={`w-${i}`} style={{
+              display: 'flex', alignItems: 'flex-start', gap: 10, padding: '10px 14px', borderRadius: 10, marginBottom: 6,
+              background: 'var(--accent-orange-dim)', border: '1px solid rgba(251,146,60,0.2)',
+            }}>
+              <Info size={16} style={{ color: 'var(--accent-orange)', flexShrink: 0, marginTop: 2 }} />
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--accent-orange)' }}>警告：{w.law}</div>
+                <div style={{ fontSize: 12, color: 'var(--text-secondary)' }}>{w.message}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+      {compliance.isValid && schedules.length > 0 && (
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: 8, padding: '8px 14px', borderRadius: 10, marginBottom: 16,
+          background: 'var(--accent-green-dim)', border: '1px solid rgba(52,211,153,0.2)',
+        }}>
+          <Shield size={16} style={{ color: 'var(--accent-green)' }} />
+          <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--accent-green)' }}>排班符合勞基法規定</span>
+        </div>
+      )}
 
       {/* Legend */}
       <div style={{ display: 'flex', gap: 8, marginBottom: 16, flexWrap: 'wrap' }}>
@@ -339,6 +392,106 @@ export default function Schedule() {
           </table>
         </div>
       </div>
+
+      {/* Law Reference Modal */}
+      {showLawModal && (
+        <Modal title="排班相關法規參照" onClose={() => setShowLawModal(false)} onSubmit={() => setShowLawModal(false)} submitLabel="關閉">
+          <div style={{ maxHeight: '65vh', overflowY: 'auto' }}>
+            {/* 勞基法 */}
+            <div style={{ fontSize: 16, fontWeight: 800, color: 'var(--text-primary)', marginBottom: 12, display: 'flex', alignItems: 'center', gap: 8 }}>
+              <span style={{ padding: '3px 10px', borderRadius: 6, fontSize: 11, background: 'var(--accent-cyan-dim)', color: 'var(--accent-cyan)', fontWeight: 700 }}>勞基法</span>
+              勞動基準法
+            </div>
+            {Object.values(LABOR_STANDARDS).map(rule => (
+              <div key={rule.law} style={{ padding: '12px 0', borderBottom: '1px solid var(--border-subtle)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
+                  <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)' }}>{rule.title}</span>
+                  <span style={{ padding: '2px 8px', borderRadius: 6, fontSize: 10, fontWeight: 600, background: 'var(--accent-blue-dim)', color: 'var(--accent-blue)' }}>{rule.law}</span>
+                </div>
+                <div style={{ fontSize: 12, color: 'var(--text-secondary)', lineHeight: 1.7 }}>{rule.desc}</div>
+                {rule.note && <div style={{ fontSize: 11, color: 'var(--accent-orange)', marginTop: 4 }}>⚠ {rule.note}</div>}
+                {rule.detail && (
+                  <div style={{ marginTop: 6, paddingLeft: 12 }}>
+                    {rule.detail.map((d, i) => <div key={i} style={{ fontSize: 11, color: 'var(--text-muted)', marginBottom: 2 }}>• {d}</div>)}
+                  </div>
+                )}
+                {rule.rates && (
+                  <div style={{ marginTop: 8, background: 'var(--glass-light)', borderRadius: 8, padding: 10 }}>
+                    <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-secondary)', marginBottom: 6 }}>加班費率：</div>
+                    {rule.rates.map((r, i) => (
+                      <div key={i} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: 'var(--text-muted)', padding: '2px 0' }}>
+                        <span>{r.desc}</span>
+                        <span style={{ fontWeight: 600, color: 'var(--accent-cyan)' }}>{r.formula}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                {rule.conditions && (
+                  <div style={{ marginTop: 6, paddingLeft: 12 }}>
+                    {rule.conditions.map((c, i) => <div key={i} style={{ fontSize: 11, color: 'var(--text-muted)', marginBottom: 2 }}>• {c}</div>)}
+                  </div>
+                )}
+                {rule.measures && (
+                  <div style={{ marginTop: 6, paddingLeft: 12 }}>
+                    {rule.measures.map((m, i) => <div key={i} style={{ fontSize: 11, color: 'var(--text-muted)', marginBottom: 2 }}>• {m}</div>)}
+                  </div>
+                )}
+                {rule.holidays2026 && (
+                  <div style={{ marginTop: 8, display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                    {rule.holidays2026.map(h => (
+                      <span key={h.date} style={{ padding: '3px 10px', borderRadius: 6, fontSize: 10, fontWeight: 600, background: 'var(--accent-red-dim)', color: 'var(--accent-red)' }}>
+                        {h.date} {h.name}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+
+            {/* 性平法 */}
+            <div style={{ fontSize: 16, fontWeight: 800, color: 'var(--text-primary)', margin: '20px 0 12px', display: 'flex', alignItems: 'center', gap: 8 }}>
+              <span style={{ padding: '3px 10px', borderRadius: 6, fontSize: 11, background: 'var(--accent-pink-dim)', color: 'var(--accent-pink)', fontWeight: 700 }}>性平法</span>
+              性別平等工作法
+            </div>
+            {Object.values(GENDER_EQUALITY).map(rule => (
+              <div key={rule.law} style={{ padding: '12px 0', borderBottom: '1px solid var(--border-subtle)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
+                  <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)' }}>{rule.title}</span>
+                  <span style={{ padding: '2px 8px', borderRadius: 6, fontSize: 10, fontWeight: 600, background: 'var(--accent-pink-dim)', color: 'var(--accent-pink)' }}>{rule.law}</span>
+                </div>
+                <div style={{ fontSize: 12, color: 'var(--text-secondary)', lineHeight: 1.7 }}>{rule.desc}</div>
+                {rule.impact && <div style={{ fontSize: 11, color: 'var(--accent-cyan)', marginTop: 4 }}>💡 {rule.impact}</div>}
+              </div>
+            ))}
+
+            {/* 職安法 */}
+            <div style={{ fontSize: 16, fontWeight: 800, color: 'var(--text-primary)', margin: '20px 0 12px', display: 'flex', alignItems: 'center', gap: 8 }}>
+              <span style={{ padding: '3px 10px', borderRadius: 6, fontSize: 11, background: 'var(--accent-green-dim)', color: 'var(--accent-green)', fontWeight: 700 }}>職安法</span>
+              職業安全衛生法
+            </div>
+            {Object.values(OCCUPATIONAL_SAFETY).map(rule => (
+              <div key={rule.law} style={{ padding: '12px 0', borderBottom: '1px solid var(--border-subtle)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
+                  <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)' }}>{rule.title}</span>
+                  <span style={{ padding: '2px 8px', borderRadius: 6, fontSize: 10, fontWeight: 600, background: 'var(--accent-green-dim)', color: 'var(--accent-green)' }}>{rule.law}</span>
+                </div>
+                <div style={{ fontSize: 12, color: 'var(--text-secondary)', lineHeight: 1.7 }}>{rule.desc}</div>
+                {rule.measures && (
+                  <div style={{ marginTop: 6, paddingLeft: 12 }}>
+                    {rule.measures.map((m, i) => <div key={i} style={{ fontSize: 11, color: 'var(--text-muted)', marginBottom: 2 }}>• {m}</div>)}
+                  </div>
+                )}
+                {rule.prohibitedWork && (
+                  <div style={{ marginTop: 6, paddingLeft: 12 }}>
+                    <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--accent-red)', marginBottom: 4 }}>禁止作業：</div>
+                    {rule.prohibitedWork.map((w, i) => <div key={i} style={{ fontSize: 11, color: 'var(--text-muted)', marginBottom: 2 }}>• {w}</div>)}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </Modal>
+      )}
     </div>
   )
 }
