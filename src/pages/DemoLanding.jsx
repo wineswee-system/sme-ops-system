@@ -25,7 +25,7 @@ function useCounter(target, duration = 1800, start = false) {
 }
 
 // ── Intro section data ──
-const MODULES_INTRO = [
+const 核心模組_INTRO = [
   {
     icon: '👥', title: '人資管理', color: 'var(--accent-cyan)', dim: 'var(--accent-cyan-dim)',
     features: ['打卡追蹤', '請假 / 加班審核', '薪資計算與獎金', '績效考核', '招募管理', '差旅費核銷'], tag: 'HR',
@@ -48,7 +48,7 @@ const MODULES_INTRO = [
   },
   {
     icon: '🏆', title: '績效獎金', color: 'var(--accent-yellow)', dim: 'var(--accent-yellow-dim)',
-    features: ['業務獎金自動計算', '倉管績效評分', '跨部門合戰', 'CRM 數據連動', 'WMS 數據連動', '獎金發放紀錄'], tag: 'BONUS',
+    features: ['業務獎金自動計算', '倉管績效評分', '跨部門合戰', 'CRM 數據連動', 'WMS 數據連動', '獎金發放紀錄'], tag: '更多亮點',
   },
   {
     icon: '🤖', title: 'AI 工具', color: 'var(--accent-pink)', dim: 'var(--accent-pink-dim)',
@@ -60,7 +60,7 @@ const MODULES_INTRO = [
   },
 ]
 
-const INTEGRATIONS = [
+const 跨系統串接S = [
   { from: 'CRM', to: 'WMS', desc: '出貨單自動帶入客戶信用額度警示', icon: '⚡' },
   { from: 'WMS', to: 'CRM', desc: '客戶頁顯示最新出貨紀錄與狀態', icon: '🔗' },
   { from: 'CRM', to: '獎金', desc: '業務獎金直接抓 CRM 成交數據', icon: '🏆' },
@@ -76,7 +76,7 @@ const STATS = [
   { label: '資料表串接', value: 30, suffix: '+' },
 ]
 
-const HIGHLIGHTS = [
+const 我們的優勢 = [
   {
     icon: '🔗', title: '組織系統統一來源',
     desc: '員工、部門、分店資料只需維護一次。HR、CRM、WMS、流程管理全部引用同一份資料，不再出現員工姓名打錯找不到的問題。',
@@ -386,12 +386,12 @@ export default function DemoLanding() {
          ══════════════════════════════════════════ */}
       <section id="modules" style={{ padding: '80px 40px', maxWidth: 1200, margin: '0 auto' }}>
         <div style={{ textAlign: 'center', marginBottom: 52 }}>
-          <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--accent-cyan)', letterSpacing: '2px', marginBottom: 12 }}>MODULES</div>
-          <h2 style={{ fontSize: 36, fontWeight: 800, margin: 0 }}>8 大核心模組</h2>
-          <p style={{ color: 'var(--text-secondary)', marginTop: 12, fontSize: 15 }}>覆蓋企業日常營運所有面向，模組間資料全面互通</p>
+          <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--accent-cyan)', letterSpacing: '2px', marginBottom: 12 }}>核心模組</div>
+          <h2 style={{ fontSize: 36, fontWeight: 800, margin: 0 }}>企業營運的每一塊，我們都幫你想到了</h2>
+          <p style={{ color: 'var(--text-secondary)', marginTop: 12, fontSize: 15 }}>從人事薪資到財務會計，模組之間資料自動串接，不用再手動搬資料</p>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 16 }}>
-          {MODULES_INTRO.map((m, i) => (
+          {核心模組_INTRO.map((m, i) => (
             <div
               key={i}
               onMouseEnter={() => setActiveModule(i)}
@@ -435,12 +435,12 @@ export default function DemoLanding() {
       <section style={{ padding: '80px 40px', background: 'var(--bg-secondary)' }}>
         <div style={{ maxWidth: 900, margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: 52 }}>
-            <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--accent-purple)', letterSpacing: '2px', marginBottom: 12 }}>INTEGRATION</div>
-            <h2 style={{ fontSize: 36, fontWeight: 800, margin: 0 }}>模組間深度整合</h2>
-            <p style={{ color: 'var(--text-secondary)', marginTop: 12, fontSize: 15 }}>資料不再孤立，各系統即時互通，讓決策更即時、獎金更透明</p>
+            <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--accent-purple)', letterSpacing: '2px', marginBottom: 12 }}>跨系統串接</div>
+            <h2 style={{ fontSize: 36, fontWeight: 800, margin: 0 }}>系統之間自動串接，資料不再各做各的</h2>
+            <p style={{ color: 'var(--text-secondary)', marginTop: 12, fontSize: 15 }}>訂單成立自動檢查庫存、出貨完成自動產生帳款、獎金直接抓業績數據</p>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 14 }}>
-            {INTEGRATIONS.map((item, i) => (
+            {跨系統串接S.map((item, i) => (
               <div key={i} style={{
                 background: 'var(--bg-card)', border: '1px solid var(--border-subtle)',
                 borderRadius: 14, padding: '20px 20px',
@@ -469,9 +469,9 @@ export default function DemoLanding() {
          ══════════════════════════════════════════ */}
       <section style={{ padding: '80px 40px', maxWidth: 1200, margin: '0 auto' }}>
         <div style={{ textAlign: 'center', marginBottom: 52 }}>
-          <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--accent-green)', letterSpacing: '2px', marginBottom: 12 }}>LINE INTEGRATION</div>
-          <h2 style={{ fontSize: 36, fontWeight: 800, margin: 0 }}>LINE 官方帳號整合</h2>
-          <p style={{ color: 'var(--text-secondary)', marginTop: 12, fontSize: 15 }}>員工用 LINE 即可打卡、查薪水、請假，不需要額外下載 App</p>
+          <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--accent-green)', letterSpacing: '2px', marginBottom: 12 }}>LINE 行動整合</div>
+          <h2 style={{ fontSize: 36, fontWeight: 800, margin: 0 }}>員工用 LINE 就能搞定所有事</h2>
+          <p style={{ color: 'var(--text-secondary)', marginTop: 12, fontSize: 15 }}>不用另外裝 App，打開 LINE 就能打卡、查薪水、請假、回報進度</p>
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 32, alignItems: 'start' }}>
@@ -525,8 +525,8 @@ export default function DemoLanding() {
                 </div>
               </div>
             </div>
-            <div style={{ marginTop: 16, fontSize: 14, fontWeight: 700, color: 'var(--text-primary)' }}>聊天指令回覆</div>
-            <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 4 }}>輸入「打卡」「薪資」即時回覆</div>
+            <div style={{ marginTop: 16, fontSize: 14, fontWeight: 700, color: 'var(--text-primary)' }}>傳訊息就能操作</div>
+            <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 4 }}>打「打卡」兩個字，系統秒回結果</div>
           </div>
 
           {/* Phone 2: LIFF Home */}
@@ -595,8 +595,8 @@ export default function DemoLanding() {
                 ))}
               </div>
             </div>
-            <div style={{ marginTop: 16, fontSize: 14, fontWeight: 700, color: 'var(--text-primary)' }}>LIFF 員工 App</div>
-            <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 4 }}>LINE 內開啟，免安裝</div>
+            <div style={{ marginTop: 16, fontSize: 14, fontWeight: 700, color: 'var(--text-primary)' }}>員工行動工作台</div>
+            <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 4 }}>在 LINE 裡面直接開，不用另外下載</div>
           </div>
 
           {/* Phone 3: Rich Menu */}
@@ -647,8 +647,8 @@ export default function DemoLanding() {
                 <span style={{ fontSize: 11, color: '#666' }}>SME OPS 智慧選單 ▾</span>
               </div>
             </div>
-            <div style={{ marginTop: 16, fontSize: 14, fontWeight: 700, color: 'var(--text-primary)' }}>Rich Menu 快捷選單</div>
-            <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 4 }}>6 格精緻圖示，一鍵操作</div>
+            <div style={{ marginTop: 16, fontSize: 14, fontWeight: 700, color: 'var(--text-primary)' }}>底部快捷選單</div>
+            <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 4 }}>六大功能一目瞭然，點了就用</div>
           </div>
         </div>
 
@@ -657,12 +657,12 @@ export default function DemoLanding() {
           display: 'flex', justifyContent: 'center', gap: 24, marginTop: 40, flexWrap: 'wrap',
         }}>
           {[
-            '免安裝 App',
-            'LINE 內直接操作',
-            '即時 Flex Message 回覆',
-            '自動推播通知',
-            'GPS 定位打卡',
-            '整月排休日曆',
+            '不用裝 App，打開 LINE 就能用',
+            '打卡、請假、查薪水一指搞定',
+            '訊息卡片即時回覆結果',
+            '班表提醒、庫存警示自動推播',
+            'GPS + WiFi 雙重打卡驗證',
+            '整月日曆排休，一目瞭然',
           ].map(f => (
             <div key={f} style={{
               display: 'flex', alignItems: 'center', gap: 6,
@@ -681,11 +681,11 @@ export default function DemoLanding() {
          ══════════════════════════════════════════ */}
       <section style={{ padding: '80px 40px', maxWidth: 1100, margin: '0 auto' }}>
         <div style={{ textAlign: 'center', marginBottom: 52 }}>
-          <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--accent-green)', letterSpacing: '2px', marginBottom: 12 }}>HIGHLIGHTS</div>
-          <h2 style={{ fontSize: 36, fontWeight: 800, margin: 0 }}>核心設計理念</h2>
+          <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--accent-green)', letterSpacing: '2px', marginBottom: 12 }}>我們的優勢</div>
+          <h2 style={{ fontSize: 36, fontWeight: 800, margin: 0 }}>為什麼老闆都選我們？</h2>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: 20 }}>
-          {HIGHLIGHTS.map((item, i) => (
+          {我們的優勢.map((item, i) => (
             <div key={i} style={{
               background: 'var(--bg-card)', border: '1px solid var(--border-subtle)',
               borderRadius: 16, padding: '28px 24px',
@@ -708,57 +708,57 @@ export default function DemoLanding() {
          ══════════════════════════════════════════ */}
       <section style={{ padding: '80px 40px', maxWidth: 1200, margin: '0 auto' }}>
         <div style={{ textAlign: 'center', marginBottom: 52 }}>
-          <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--accent-blue)', letterSpacing: '2px', marginBottom: 12 }}>FULL FEATURES</div>
-          <h2 style={{ fontSize: 36, fontWeight: 800, margin: 0 }}>完整功能清單</h2>
-          <p style={{ color: 'var(--text-secondary)', marginTop: 12, fontSize: 15 }}>54 個功能頁面、23 張資料表、涵蓋企業營運每一個面向</p>
+          <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--accent-blue)', letterSpacing: '2px', marginBottom: 12 }}>所有功能一覽</div>
+          <h2 style={{ fontSize: 36, fontWeight: 800, margin: 0 }}>系統完整功能一覽</h2>
+          <p style={{ color: 'var(--text-secondary)', marginTop: 12, fontSize: 15 }}>70+ 個功能頁面、35 張資料表、12 大模組，從人事到財務全面涵蓋</p>
         </div>
 
         {/* Feature modules */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: 16 }}>
           {[
             {
-              icon: '👥', title: '人資管理', tag: '15 項功能', color: 'var(--accent-cyan)',
-              items: ['HR 報表總覽', '打卡追蹤（GPS 地理圍籬）', '請假管理（審核流程）', '加班申請', '薪資管理 + PDF 匯出', '排班系統', '假日管理', '排班規則', '績效考核', '招募管理', '文件管理', '轉調紀錄', '公出差旅', '費用核銷', '績效獎金'],
+              icon: '👥', title: '人事管理', tag: '15 項功能', color: 'var(--accent-cyan)',
+              items: ['人事報表總覽', '打卡系統（GPS 圍籬 + WiFi IP 驗證）', '請假管理（14種假別，符合勞基法/性平法）', '加班申請與費率自動計算', '薪資管理（含請假扣款明細 + 報帳退款）', '智慧排班（AI 自動排班 + 法規即時檢核）', '假日管理（年度月曆 + 國定/公司假）', '排班規則（三大法律50+條完整對照）', '績效考核', '招募管理', '文件管理', '轉調紀錄', '公出差旅', '費用核銷', '績效獎金'],
             },
             {
-              icon: '🤝', title: 'CRM 客戶管理', tag: '5 項功能', color: 'var(--accent-blue)',
-              items: ['CRM 總覽儀表板', '客戶 360° 管理', '銷售漏斗追蹤', '行銷自動化', '客服工單系統'],
+              icon: '🤝', title: '客戶經營', tag: '5 項功能', color: 'var(--accent-blue)',
+              items: ['客戶經營總覽', '客戶360°完整檢視（個資遮蔽保護）', '銷售漏斗追蹤（贏單自動產生應收帳款）', '行銷活動管理', '客服工單追蹤'],
             },
             {
-              icon: '📦', title: 'WMS 倉儲管理', tag: '6 項功能', color: 'var(--accent-green)',
-              items: ['倉庫總覽', 'SKU 商品主檔', '入庫管理', '庫存即時追蹤', '出庫管理', '異常與報表分析'],
-            },
-            {
-              icon: '⚙️', title: '流程管理', tag: '5 項功能', color: 'var(--accent-purple)',
-              items: ['流程進度總覽', '工作流程設計', '任務分派追蹤', '查核清單', 'SOP 標準作業程序'],
-            },
-            {
-              icon: '🏢', title: '組織管理', tag: '8 項功能', color: 'var(--accent-orange)',
-              items: ['組織總覽', '組織圖', '多公司管理', '門市管理（GPS 座標）', '部門管理', '員工目錄', 'LINE 整合', '模板管理'],
-            },
-            {
-              icon: '🔐', title: '系統管理', tag: '6 項功能', color: 'var(--accent-red)',
-              items: ['自動觸發器', '通知管理', '使用者權限', '操作紀錄時間軸', '系統效能監控', '全域設定'],
+              icon: '📦', title: '倉儲物流', tag: '6 項功能', color: 'var(--accent-green)',
+              items: ['倉庫營運總覽', '商品主檔管理', '進貨入庫作業', '庫存即時追蹤（異動自動寫入稽核日誌）', '出貨管理（出貨自動拋轉應收帳款）', '異常報表與分析'],
             },
             {
               icon: '🛒', title: '採購管理', tag: '4 項功能', color: 'var(--accent-yellow)',
-              items: ['供應商管理（評等）', '採購申請 PR（審核流程）', '採購單 PO（追蹤）', '進貨驗收（與 WMS 串接）'],
+              items: ['供應商管理（評等與付款條件）', '採購申請（主管動態簽核）', '採購單追蹤（庫存不足自動建議）', '進貨驗收（驗收完自動產生應付帳款）'],
             },
             {
               icon: '💰', title: '財務會計', tag: '4 項功能', color: 'var(--accent-cyan)',
-              items: ['財務總覽（資產負債）', '傳票管理（GL 總帳）', '應收帳款 AR（逾期追蹤）', '應付帳款 AP（付款管理）'],
+              items: ['財務總覽（資產負債 + 毛利分析）', '傳票管理（借貸自動平衡）', '應收帳款（帳齡分析 + 逾期追蹤）', '應付帳款（付款排程管理）'],
             },
             {
-              icon: '🔧', title: '製造 & 品質', tag: '3 項功能', color: 'var(--accent-red)',
-              items: ['BOM 物料清單（成品零件展開）', 'MRP 物料需求計畫（缺料預警）', '品質管理（進料/成品檢驗）'],
+              icon: '🔧', title: '生產品管', tag: '3 項功能', color: 'var(--accent-red)',
+              items: ['物料清單（成品展開零件組成）', '物料需求計畫（根據訂單自動算缺料）', '品質管理（進料檢驗 / 成品抽檢 / 合格率追蹤）'],
             },
             {
-              icon: '🤖', title: 'AI 工具', tag: '2 項功能', color: 'var(--accent-pink)',
-              items: ['AI 幫助中心', 'Agent 控制台'],
+              icon: '⚙️', title: '流程管理', tag: '5 項功能', color: 'var(--accent-purple)',
+              items: ['流程進度總覽', '工作流程設計與自動化', '任務分派與進度追蹤', '查核清單', '標準作業程序範本'],
             },
             {
-              icon: '📱', title: 'LINE 整合', tag: '員工行動端', color: '#34d399',
-              items: ['LINE 打卡（GPS 驗證）', 'LINE 查薪資', 'LINE 請假查詢', 'LINE 任務回報', 'LINE 查庫存', '排休申請（月曆）', '推播：班表提醒', '推播：低庫存警示', '推播：薪資通知'],
+              icon: '🏢', title: '組織管理', tag: '8 項功能', color: 'var(--accent-orange)',
+              items: ['組織總覽', '組織架構圖', '多公司管理', '門市管理（含 GPS 打卡座標）', '部門管理', '員工目錄（個資遮蔽保護）', 'LINE 官方帳號串接', '文件範本管理'],
+            },
+            {
+              icon: '🔐', title: '系統管理', tag: '6 項功能', color: 'var(--accent-red)',
+              items: ['自動觸發器（排程 + 事件驅動）', '通知中心（即時推播）', '使用者權限（RBAC 角色管理）', '操作紀錄（欄位級變更追蹤）', '系統效能監控', '全域設定'],
+            },
+            {
+              icon: '🤖', title: '智慧工具', tag: '2 項功能', color: 'var(--accent-pink)',
+              items: ['AI 助理中心', 'Agent 智慧控制台'],
+            },
+            {
+              icon: '📱', title: 'LINE 員工服務', tag: '行動辦公', color: '#34d399',
+              items: ['LINE 打卡（GPS + WiFi 雙重驗證）', 'LINE 查薪資（含扣款明細）', 'LINE 請假（支援時數制）', 'LINE 任務回報（即時更新狀態）', 'LINE 查庫存', '排休申請（整月日曆選日）', '出差申請', '主管行動簽核（假單/採購單）', '推播通知（班表/庫存/薪資）'],
             },
           ].map((mod, i) => (
             <div key={i} style={{
@@ -796,19 +796,23 @@ export default function DemoLanding() {
         {/* Special features */}
         <div style={{ marginTop: 32 }}>
           <div style={{ textAlign: 'center', marginBottom: 24 }}>
-            <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--accent-yellow)', letterSpacing: '2px', marginBottom: 8 }}>BONUS</div>
-            <h3 style={{ fontSize: 24, fontWeight: 800, margin: 0, color: 'var(--text-primary)' }}>額外特色功能</h3>
+            <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--accent-yellow)', letterSpacing: '2px', marginBottom: 8 }}>更多亮點</div>
+            <h3 style={{ fontSize: 24, fontWeight: 800, margin: 0, color: 'var(--text-primary)' }}>更多亮點功能</h3>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 12 }}>
             {[
-              { icon: '📊', label: 'Dashboard 即時圖表', desc: '4 張互動式圖表' },
-              { icon: '📄', label: 'PDF 報表匯出', desc: '考勤 / 薪資一鍵下載' },
-              { icon: '🔔', label: '即時通知中心', desc: '待審 / 低庫存 / 逾期' },
-              { icon: '🎯', label: '首次登入導覽', desc: '4 步驟精靈引導設定' },
-              { icon: '📍', label: 'GPS 打卡圍籬', desc: '門市 300m 內才能打卡' },
-              { icon: '👤', label: '員工自助 Portal', desc: '獨立入口查出勤薪資' },
-              { icon: '🌙', label: '深淺色主題切換', desc: '護眼暗色 / 清爽淺色' },
-              { icon: '💬', label: 'LINE Rich Menu', desc: '精緻 6 格快捷選單' },
+              { icon: '📊', label: '營運數據儀表板', desc: '即時圖表，營收、出勤、庫存一目瞭然' },
+              { icon: '📄', label: '報表一鍵匯出', desc: '考勤表、薪資單直接下載 PDF' },
+              { icon: '🔔', label: '即時通知中心', desc: '假單待審、庫存不足、任務逾期即時提醒' },
+              { icon: '🎯', label: '新手引導精靈', desc: '第一次登入，4 步驟帶你完成系統設定' },
+              { icon: '📍', label: '打卡地理圍籬', desc: '門市 150 公尺內 + WiFi IP 雙重驗證' },
+              { icon: '👤', label: '員工自助入口', desc: '員工專屬頁面，查出勤、薪資、請假' },
+              { icon: '⚖️', label: '勞基法合規檢核', desc: '排班即時檢查三大法律，違規自動警示' },
+              { icon: '🔒', label: '個資遮蔽保護', desc: '手機、Email 自動遮蔽，主管才能查看' },
+              { icon: '🔄', label: '跨模組自動串接', desc: '贏單→應收、出貨→帳款、缺料→採購' },
+              { icon: '📋', label: '動態簽核流程', desc: '依組織架構自動找主管，LINE 上直接核准' },
+              { icon: '🌙', label: '深淺色主題', desc: '護眼暗色模式 / 清爽淺色模式隨時切換' },
+              { icon: '💬', label: 'LINE 快捷選單', desc: '精緻圖示設計，員工一看就會用' },
             ].map((f, i) => (
               <div key={i} style={{
                 background: 'var(--bg-card)', border: '1px solid var(--border-subtle)',
@@ -832,11 +836,11 @@ export default function DemoLanding() {
           overflow: 'hidden', border: '1px solid var(--border-subtle)',
         }}>
           {[
-            { value: '70', label: '功能頁面' },
-            { value: '35', label: '資料表' },
-            { value: '12', label: '系統模組' },
-            { value: '9', label: 'LINE 指令' },
-            { value: '3', label: '推播類型' },
+            { value: '70+', label: '功能頁面' },
+            { value: '35+', label: '資料表' },
+            { value: '12', label: '大模組' },
+            { value: '14', label: '法定假別' },
+            { value: '50+', label: '法規條文' },
           ].map((s, i) => (
             <div key={i} style={{ background: 'var(--bg-card)', padding: '20px', textAlign: 'center' }}>
               <div style={{ fontSize: 28, fontWeight: 800, color: 'var(--accent-cyan)' }}>{s.value}</div>
@@ -855,9 +859,9 @@ export default function DemoLanding() {
       }}>
         <div style={{ maxWidth: 1200, margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: 52 }}>
-            <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--accent-cyan)', letterSpacing: '2px', marginBottom: 12 }}>TRY IT NOW</div>
-            <h2 style={{ fontSize: 36, fontWeight: 800, margin: 0 }}>選擇系統，開始體驗</h2>
-            <p style={{ color: 'var(--text-secondary)', marginTop: 12, fontSize: 15 }}>點擊任一模組，直接進入系統操作介面</p>
+            <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--accent-cyan)', letterSpacing: '2px', marginBottom: 12 }}>立即體驗</div>
+            <h2 style={{ fontSize: 36, fontWeight: 800, margin: 0 }}>挑一個模組，馬上試用看看</h2>
+            <p style={{ color: 'var(--text-secondary)', marginTop: 12, fontSize: 15 }}>點進去就能操作，不用註冊、不用等</p>
           </div>
 
           <div style={{
@@ -950,9 +954,9 @@ export default function DemoLanding() {
       <section style={{ padding: '80px 40px', background: 'var(--bg-secondary)' }}>
         <div style={{ maxWidth: 720, margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: 40 }}>
-            <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--accent-cyan)', letterSpacing: '2px', marginBottom: 12 }}>CONTACT US</div>
-            <h2 style={{ fontSize: 36, fontWeight: 800, margin: 0 }}>聯繫我們</h2>
-            <p style={{ color: 'var(--text-secondary)', marginTop: 12, fontSize: 15 }}>留下您的資訊，我們將盡快與您聯繫</p>
+            <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--accent-cyan)', letterSpacing: '2px', marginBottom: 12 }}>預約諮詢</div>
+            <h2 style={{ fontSize: 36, fontWeight: 800, margin: 0 }}>想了解更多？留個資料聊聊</h2>
+            <p style={{ color: 'var(--text-secondary)', marginTop: 12, fontSize: 15 }}>填寫後我們會在一個工作天內主動聯繫您</p>
           </div>
 
           {inquiryStatus === 'success' ? (
@@ -1079,9 +1083,9 @@ export default function DemoLanding() {
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             fontSize: 11, fontWeight: 800, color: '#fff',
           }}>S</div>
-          <span>SME OPS — 企業營運管理系統</span>
+          <span>SME OPS — 中小企業智慧營運系統</span>
         </div>
-        <div>Built with React + Supabase</div>
+        <div>專為台灣中小企業打造</div>
       </footer>
 
       <style>{`
