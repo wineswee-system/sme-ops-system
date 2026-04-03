@@ -203,6 +203,7 @@ const navSections = [
       { icon: ScrollText, label: '操作紀錄', path: '/system/audit', color: '#64748b' },
       { icon: Award, label: '績效管理', path: '/system/performance', color: '#f472b6' },
       { icon: Settings, label: '系統設定', path: '/system/settings', color: '#94a3b8' },
+      { icon: FileText, label: '資料匯入匯出', path: '/system/import-export', color: '#34d399' },
     ]
   },
   {
@@ -210,6 +211,9 @@ const navSections = [
     items: [
       { icon: BookOpen, label: '說明中心', path: '/ai/help', color: '#22d3ee' },
       { icon: Bot, label: 'Agent 控制台', path: '/ai/agent', color: '#f472b6' },
+      { icon: BookOpen, label: '教學中心', path: '/ai/tutorial', color: '#34d399' },
+      { icon: FileText, label: '電商串接', path: '/integration/ecommerce', color: '#fb923c' },
+      { icon: Settings, label: 'API 文件', path: '/integration/api', color: '#64748b' },
     ]
   },
 ]

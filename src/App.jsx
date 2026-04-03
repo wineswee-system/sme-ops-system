@@ -82,6 +82,10 @@ import Shipments from './pages/sales/Shipments'
 import Members from './pages/crm/Members'
 import Invoices from './pages/finance/Invoices'
 import SalesForecast from './pages/analytics/SalesForecast'
+import DataImportExport from './pages/system/DataImportExport'
+import Ecommerce from './pages/integration/Ecommerce'
+import APIDocumentation from './pages/integration/APIDocumentation'
+import Tutorial from './pages/ai/Tutorial'
 
 function AdminApp() {
   const [showOnboarding, setShowOnboarding] = useState(() => !localStorage.getItem('sme_onboarded'))
@@ -134,9 +138,14 @@ function AdminApp() {
             <Route path="/system/audit" element={<AuditLog />} />
             <Route path="/system/performance" element={<PerformanceMgmt />} />
             <Route path="/system/settings" element={<SystemSettings />} />
+            <Route path="/system/import-export" element={<DataImportExport />} />
             {/* AI */}
             <Route path="/ai/help" element={<HelpCenter />} />
             <Route path="/ai/agent" element={<AgentConsole />} />
+            <Route path="/ai/tutorial" element={<Tutorial />} />
+            {/* Integration */}
+            <Route path="/integration/ecommerce" element={<Ecommerce />} />
+            <Route path="/integration/api" element={<APIDocumentation />} />
             {/* CRM */}
             <Route path="/crm/overview" element={<CRMOverview />} />
             <Route path="/crm/customers" element={<Customers />} />

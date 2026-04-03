@@ -98,7 +98,7 @@ const 跨系統串接S = [
 
 const STATS = [
   { label: '功能模組', value: 14, suffix: '' },
-  { label: '功能頁面', value: 95, suffix: '+' },
+  { label: '功能頁面', value: 100, suffix: '+' },
   { label: '跨模組整合', value: 6, suffix: '項' },
   { label: '資料表串接', value: 30, suffix: '+' },
 ]
@@ -823,8 +823,12 @@ export default function DemoLanding() {
               items: ['自動觸發器（排程 + 事件驅動）', '通知中心（即時推播）', '使用者權限（RBAC 角色管理）', '操作紀錄（欄位級變更追蹤）', '系統效能監控', '全域設定'],
             },
             {
-              icon: '🤖', title: '智慧工具', tag: '2 項功能', color: 'var(--accent-pink)',
-              items: ['AI 助理中心', 'Agent 智慧控制台'],
+              icon: '🤖', title: '智慧工具', tag: '5 項功能', color: 'var(--accent-pink)',
+              items: ['AI 助理中心', 'Agent 智慧控制台', '教學中心（分類教程/難度標示）', '銷售預測（趨勢圖表/漏斗分析）', '資料匯入匯出（Excel/CSV）'],
+            },
+            {
+              icon: '🔌', title: '外部串接', tag: '2 項功能', color: 'var(--accent-orange)',
+              items: ['電商平台串接（蝦皮/Momo/PChome/LINE購物）', 'API 開放介面（RESTful 文件/Token 驗證）'],
             },
             {
               icon: '📱', title: 'LINE 員工服務', tag: '行動辦公', color: '#34d399',
@@ -906,7 +910,7 @@ export default function DemoLanding() {
           overflow: 'hidden', border: '1px solid var(--border-subtle)',
         }}>
           {[
-            { value: '95+', label: '功能頁面' },
+            { value: '100+', label: '功能頁面' },
             { value: '52+', label: '資料表' },
             { value: '12', label: '大模組' },
             { value: '14', label: '法定假別' },
