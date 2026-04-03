@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import {
   Users, GitBranch, Building2, HeadphonesIcon, Warehouse, Settings,
-  Bot, LayoutDashboard, BarChart3, ArrowRight, Send, CheckCircle
+  Bot, LayoutDashboard, BarChart3, ArrowRight, Send, CheckCircle,
+  ShoppingCart, CreditCard, Wrench
 } from 'lucide-react'
 
 // Animated counter hook
@@ -166,6 +167,27 @@ const systems = [
     icon: Bot, accent: 'var(--accent-pink)', accentDim: 'var(--accent-pink-dim)',
     glow: 'rgba(244, 114, 182, 0.2)', path: '/ai/help',
     features: ['幫助中心', 'Agent 控制台'], moduleCount: 2,
+  },
+  {
+    id: 'purchase', title: '採購管理', subtitle: '供應商與進貨',
+    description: '從供應商管理、採購申請、下單追蹤到進貨驗收，完整的採購流程全在這裡。',
+    icon: ShoppingCart, accent: 'var(--accent-yellow)', accentDim: 'var(--accent-yellow-dim)',
+    glow: 'rgba(251, 191, 36, 0.2)', path: '/purchase/suppliers',
+    features: ['供應商管理', '採購申請', '採購單', '進貨驗收'], moduleCount: 4,
+  },
+  {
+    id: 'finance', title: '財務會計', subtitle: '帳務與金流',
+    description: '應收應付帳款、傳票管理、毛利分析，讓老闆隨時掌握公司的錢進錢出。',
+    icon: CreditCard, accent: 'var(--accent-green)', accentDim: 'var(--accent-green-dim)',
+    glow: 'rgba(52, 211, 153, 0.2)', path: '/finance/overview',
+    features: ['財務總覽', '傳票管理', '應收帳款', '應付帳款'], moduleCount: 4,
+  },
+  {
+    id: 'manufacturing', title: '生產品管', subtitle: '製造與品質',
+    description: '物料清單展開零件、需求計畫自動算缺料、品質檢驗追蹤合格率。',
+    icon: Wrench, accent: 'var(--accent-orange)', accentDim: 'var(--accent-orange-dim)',
+    glow: 'rgba(251, 146, 60, 0.2)', path: '/manufacturing/bom',
+    features: ['物料清單', '需求計畫', '品質管理'], moduleCount: 3,
   },
 ]
 
