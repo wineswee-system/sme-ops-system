@@ -203,6 +203,7 @@ const navSections = [
       { icon: ScrollText, label: '操作紀錄', path: '/system/audit', color: '#64748b' },
       { icon: Award, label: '績效管理', path: '/system/performance', color: '#f472b6' },
       { icon: Settings, label: '系統設定', path: '/system/settings', color: '#94a3b8' },
+      { icon: BarChart3, label: '資料庫管理', path: '/system/database', color: '#22d3ee' },
       { icon: FileText, label: '資料匯入匯出', path: '/system/import-export', color: '#34d399' },
     ]
   },
