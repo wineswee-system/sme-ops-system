@@ -225,6 +225,7 @@ export default function Sidebar() {
   const { profile, signOut } = useAuth()
   const [openMenus, setOpenMenus] = useState({ '/hr': true, '/process': true, '/org': true })
   const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'dark')
+  const [mobileOpen, setMobileOpen] = useState(false)
 
   const toggleMenu = (path) => {
     setOpenMenus(prev => ({ ...prev, [path]: !prev[path] }))
@@ -235,8 +236,24 @@ export default function Sidebar() {
     return location.pathname === path || location.pathname.startsWith(path + '/')
   }
 
+  // 手機版切換路由時自動關閉 sidebar
+  const handleNavClick = () => {
+    if (window.innerWidth <= 768) setMobileOpen(false)
+  }
+
   return (
-    <aside className="sidebar">
+    <>
+    {/* Mobile menu button */}
+    <button className="mobile-menu-btn" onClick={() => setMobileOpen(!mobileOpen)}>
+      {mobileOpen ? (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      ) : (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      )}
+    </button>
+    {/* Mobile overlay */}
+    <div className={`sidebar-overlay ${mobileOpen ? 'active' : ''}`} onClick={() => setMobileOpen(false)} />
+    <aside className={`sidebar ${mobileOpen ? 'open' : ''}`}>
       <div className="sidebar-brand">
         <div className="sidebar-brand-icon" style={{ background: 'linear-gradient(135deg, #22d3ee, #3b82f6, #a78bfa)', boxShadow: '0 4px 16px rgba(34,211,238,0.3)' }}>
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -308,6 +325,7 @@ export default function Sidebar() {
                             to={child.path}
                             key={ci}
                             className={({ isActive: active }) => `nav-sub-item ${active ? 'active' : ''}`}
+                            onClick={handleNavClick}
                           >
                             <ChildIcon className="nav-sub-item-icon" />
                             <span>{child.label}</span>
@@ -324,6 +342,7 @@ export default function Sidebar() {
                   to={item.path}
                   key={ii}
                   className={({ isActive: active }) => `nav-item ${active ? 'active' : ''}`}
+                  onClick={handleNavClick}
                 >
                   <Icon className="nav-item-icon" style={item.color ? { color: item.color, background: `${item.color}15`, opacity: 1 } : undefined} />
                   <span>{item.label}</span>
@@ -359,5 +378,6 @@ export default function Sidebar() {
         </div>
       </div>
     </aside>
+    </>
   )
 }
