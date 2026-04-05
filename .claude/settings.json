@@ -2,7 +2,8 @@
   "permissions": {
     "allow": [
       "Bash(npx vitest:*)",
-      "Bash(git config:*)"
+      "Bash(git config:*)",
+      "Bash(python -X utf8 test_screenshots.py)"
     ]
   }
 }
