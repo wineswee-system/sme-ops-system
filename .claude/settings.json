@@ -3,7 +3,11 @@
     "allow": [
       "Bash(npx vitest:*)",
       "Bash(git config:*)",
-      "Bash(python -X utf8 test_screenshots.py)"
+      "Bash(python -X utf8 test_screenshots.py)",
+      "Read(//mnt/c/Users/TING/Documents/Astro8/AI/wines/**)",
+      "Read(//c/Users/TING/Documents/Astro8/AI//**)",
+      "WebFetch(domain:docs.google.com)",
+      "Bash(npx vite:*)"
     ]
   }
 }
