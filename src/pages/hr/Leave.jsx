@@ -11,7 +11,8 @@ import LoadingSpinner from '../../components/LoadingSpinner'
 import Modal, { Field } from '../../components/Modal'
 
 export default function Leave() {
-  const { profile } = useAuth()
+  const { profile, hasPermission } = useAuth()
+  const canApprove = hasPermission('leave.approve')
   const [leaves, setLeaves] = useState([])
   const [employees, setEmployees] = useState([])
   const [departments, setDepartments] = useState([])
@@ -258,7 +259,7 @@ export default function Leave() {
                     )}
                   </td>
                   <td>
-                    {l.status === '待審核' && (
+                    {l.status === '待審核' && canApprove && (
                       <div style={{ display: 'flex', gap: 4 }}>
                         <button className="btn btn-sm btn-primary" onClick={() => handleApprove(l.id)}>核准</button>
                         <button className="btn btn-sm btn-secondary" onClick={() => handleReject(l.id)}>拒絕</button>

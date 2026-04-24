@@ -88,7 +88,7 @@ export function AuthProvider({ children }) {
   }
 
   const hasPermission = useCallback((code) => {
-    if (permissions.includes('admin.system')) return true
+    if (permissions.includes('system.admin')) return true
     return permissions.includes(code)
   }, [permissions])
 

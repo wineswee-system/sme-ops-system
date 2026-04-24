@@ -1,6 +1,7 @@
 import React, { lazy, Suspense, useState } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider, useAuth } from './contexts/AuthContext'
+import ProtectedRoute from './components/ProtectedRoute'
 import { TenantProvider } from './contexts/TenantContext'
 import Sidebar from './components/Sidebar'
 import OnboardingWizard from './components/OnboardingWizard'
@@ -36,8 +37,8 @@ const SuperAdminModule = lazy(() => import('./modules/SuperAdminModule'))
 const ROLE_ROUTES = {
   store_staff:  ['/', '/hr/my-schedule', '/hr/leave', '/hr/overtime', '/hr/punch-correction', '/hr/attendance', '/hr/self-service', '/hr/leave-balances'],
   office_staff: ['/', '/hr/my-schedule', '/hr/leave', '/hr/overtime', '/hr/punch-correction', '/hr/attendance', '/hr/self-service', '/hr/leave-balances', '/hr/schedule', '/hr/leave-calendar', '/hr/salary', '/hr/salary-structures', '/hr/payroll', '/process', '/org'],
-  manager:      ['/', '/hr', '/org', '/process'],
-  admin:        ['/', '/hr', '/org', '/process', '/system', '/analytics'],
+  manager:      ['/', '/hr', '/org', '/process', '/crm', '/wms', '/purchase', '/pos', '/sales', '/analytics'],
+  admin:        ['/', '/hr', '/org', '/process', '/system', '/analytics', '/finance', '/crm', '/wms', '/purchase', '/pos', '/sales', '/integration'],
   super_admin:  null, // all
 }
 
@@ -62,6 +63,7 @@ class ErrorBoundary extends React.Component {
 
 // ── AdminApp (uses ROLE_ROUTES) ──
 function AdminApp({ role = 'store_staff' }) {
+  const { hasPermission } = useAuth()
   const [showOnboarding, setShowOnboarding] = useState(() => !localStorage.getItem('sme_onboarded'))
   const allowed = role in ROLE_ROUTES ? ROLE_ROUTES[role] : ROLE_ROUTES['store_staff']
   // Module-level access check: '/hr/leave' in allowed → can enter '/hr' module
@@ -70,6 +72,9 @@ function AdminApp({ role = 'store_staff' }) {
     if (allowed === null) return true
     return allowed.some(r => r === modulePrefix || r.startsWith(modulePrefix + '/') || modulePrefix.startsWith(r))
   }
+  // Combines role-level route access with a specific permission code check
+  const canAccessWithPerm = (modulePrefix, requiredPerm) =>
+    canAccess(modulePrefix) && hasPermission(requiredPerm)
   const blocked = <Navigate to="/" replace />
 
   return (
@@ -83,7 +88,7 @@ function AdminApp({ role = 'store_staff' }) {
             <Route path="/" element={<Dashboard />} />
             <Route path="/hr/*" element={canAccess('/hr') ? <HRModule /> : blocked} />
             <Route path="/crm/*" element={canAccess('/crm') ? <CRMModule /> : blocked} />
-            <Route path="/finance/*" element={canAccess('/finance') ? <FinanceModule /> : blocked} />
+            <Route path="/finance/*" element={canAccessWithPerm('/finance', 'finance.read') ? <FinanceModule /> : blocked} />
             <Route path="/analytics" element={canAccess('/analytics') ? <AnalyticsModule /> : blocked} />
             <Route path="/analytics/*" element={canAccess('/analytics') ? <AnalyticsModule /> : blocked} />
             <Route path="/purchase/*" element={canAccess('/purchase') ? <PurchaseModule /> : blocked} />
@@ -95,10 +100,10 @@ function AdminApp({ role = 'store_staff' }) {
             <Route path="/pos/*" element={canAccess('/pos') ? <POSModule /> : blocked} />
             <Route path="/org/*" element={canAccess('/org') ? <OrgModule /> : blocked} />
             <Route path="/process/*" element={canAccess('/process') ? <ProcessModule /> : blocked} />
-            <Route path="/system/*" element={canAccess('/system') ? <SystemModule /> : blocked} />
+            <Route path="/system/*" element={canAccessWithPerm('/system', 'system.admin') ? <SystemModule /> : blocked} />
             <Route path="/ai/*" element={canAccess('/ai') ? <AIModule /> : blocked} />
             <Route path="/integration/*" element={canAccess('/integration') ? <IntegrationModule /> : blocked} />
-            <Route path="/super-admin/*" element={canAccess('/super-admin') ? <SuperAdminModule /> : blocked} />
+            <Route path="/super-admin/*" element={canAccessWithPerm('/super-admin', 'system.admin') ? <SuperAdminModule /> : blocked} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
           </Suspense>

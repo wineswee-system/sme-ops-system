@@ -304,6 +304,7 @@ const groupNav = {
       children: [
         { icon: Eye, label: '總覽', path: '/process/overview' },
         { icon: FolderOpen, label: '專案', path: '/process/projects' },
+        { icon: Sparkles, label: 'AI 設定專案', path: '/process/setup-assistant' },
         { icon: Bot, label: '流程導覽助理', path: '/ai/nav-assistant' },
         { icon: Workflow, label: '流程', path: '/process/workflows' },
         { icon: ListChecks, label: '任務', path: '/process/tasks' },

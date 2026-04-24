@@ -8,7 +8,8 @@ import LoadingSpinner from '../../components/LoadingSpinner'
 import Modal, { Field } from '../../components/Modal'
 
 export default function Overtime() {
-  const { profile } = useAuth()
+  const { profile, hasPermission } = useAuth()
+  const canApprove = hasPermission('leave.approve')
   const [records, setRecords] = useState([])
   const [employees, setEmployees] = useState([])
   const [departments, setDepartments] = useState([])
@@ -177,7 +178,7 @@ export default function Overtime() {
                     )}
                   </td>
                   <td>
-                    {o.status === '待審核' && (
+                    {o.status === '待審核' && canApprove && (
                       <div style={{ display: 'flex', gap: 4 }}>
                         <button className="btn btn-sm btn-primary" onClick={() => handleApprove(o.id)}>核准</button>
                         <button className="btn btn-sm btn-secondary" onClick={() => handleReject(o.id)}>駁回</button>
