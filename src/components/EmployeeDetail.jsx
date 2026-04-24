@@ -17,7 +17,7 @@ const SPECIAL_CATEGORIES = ['身心障礙者', '中低收入戶', '原住民', '
 // Hex literal needed for 8-digit alpha-suffix concat in boxShadow; mirrors --accent-purple
 const AVATAR_FALLBACK = '#8b5cf6'
 
-export default function EmployeeDetail({ employee, employees: allEmployees, stores, departments, onUpdate, onClose }) {
+export default function EmployeeDetail({ employee, employees: allEmployees, stores, departments, onUpdate, onClose, clickY }) {
   const { isAdmin } = useAuth()
   const [tab, setTab] = useState('personal')
   const [form, setForm] = useState({})
@@ -34,6 +34,10 @@ export default function EmployeeDetail({ employee, employees: allEmployees, stor
   const [availability, setAvailability] = useState([])
   const [onboardingTasks, setOnboardingTasks] = useState([])
   const [assignments, setAssignments] = useState([])
+  const [lineAccounts, setLineAccounts] = useState([])
+  const [lineChannels, setLineChannels] = useState([])
+  const [newLineUserId, setNewLineUserId] = useState('')
+  const [newLineChannel, setNewLineChannel] = useState('')
 
   // Inline add
   const [newSkill, setNewSkill] = useState('')
@@ -51,7 +55,7 @@ export default function EmployeeDetail({ employee, employees: allEmployees, stor
       supabase.from('employee_reviews').select('*').eq('employee_id', employee.id).order('review_date', { ascending: false }),
       supabase.from('employee_schedule_prefs').select('*').eq('employee_id', employee.id).order('id'),
       supabase.from('leave_requests').select('*').eq('employee_id', employee.id).order('id', { ascending: false }).limit(10),
-      supabase.from('employee_availability').select('*').eq('employee_id', employee.id).order('day_of_week'),
+      supabase.from('employee_availability').select('*').eq('employee', employee.name).order('day_of_week'),
       supabase.from('tasks').select('*').eq('assignee_id', employee.id).in('status', ['未開始', '進行中', '待處理']).order('created_at', { ascending: false }),
       supabase.from('employee_assignments').select('*, departments(name), stores(name), updated_by_emp:updated_by(name)').eq('employee_id', employee.id).order('start_date', { ascending: false }),
     ]).then(([sk, dep, tr, rev, sp, lv, av, ob, asgn]) => {
@@ -64,7 +68,16 @@ export default function EmployeeDetail({ employee, employees: allEmployees, stor
       setAvailability(av.data || [])
       setOnboardingTasks(ob.data || [])
       setAssignments(asgn.data || [])
-    })
+    }).catch(err => console.warn('Failed to load employee sub-data:', err))
+    // Load LINE accounts
+    Promise.all([
+      supabase.from('employee_line_accounts').select('*, line_channels(id, code, name)').eq('employee_id', employee.id).order('is_primary', { ascending: false }),
+      supabase.from('line_channels').select('id, code, name').eq('status', 'active').order('name'),
+    ]).then(([la, ch]) => {
+      setLineAccounts(la.data || [])
+      setLineChannels(ch.data || [])
+      if (ch.data?.[0]) setNewLineChannel(String(ch.data[0].id))
+    }).catch(() => {})
   }, [employee?.id])
 
   useEffect(() => {
@@ -212,7 +225,7 @@ export default function EmployeeDetail({ employee, employees: allEmployees, stor
     set('special_categories', next)
   }
 
-  const L = { fontSize: 11, fontWeight: 600, color: 'var(--text-muted)', marginBottom: 4, marginTop: 12, textTransform: 'uppercase', letterSpacing: '0.5px' }
+  const L = { fontSize: 12, fontWeight: 600, color: 'var(--text-muted)', marginBottom: 6, marginTop: 14, letterSpacing: '0.3px' }
   const SectionTitle = ({ icon, text }) => (
     <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)', marginTop: 22, marginBottom: 10, paddingBottom: 8, borderBottom: '1px solid var(--border-subtle)', display: 'flex', alignItems: 'center', gap: 8 }}>
       <span style={{ fontSize: 15 }}>{icon}</span> {text}
@@ -241,18 +254,22 @@ export default function EmployeeDetail({ employee, employees: allEmployees, stor
   )
 
   return (
-    <div style={{ position: 'fixed', inset: 0, zIndex: 10000, display: 'flex', justifyContent: 'flex-end' }}
+    <div style={{ position: 'fixed', inset: 0, zIndex: 10000 }}
       onMouseDown={e => { if (e.target === e.currentTarget) handleClose() }}>
       {/* Backdrop */}
       <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.45)', backdropFilter: 'blur(4px)', WebkitBackdropFilter: 'blur(4px)' }}
         onMouseDown={handleClose} />
 
-      {/* Panel */}
+      {/* Panel — 根據點擊位置定位 */}
       <div style={{
-        position: 'relative', width: '100%', maxWidth: 760, height: '100vh',
-        background: 'var(--bg-primary)', borderLeft: '1px solid var(--border-medium)',
-        boxShadow: '-8px 0 40px rgba(0,0,0,0.25)', display: 'flex', flexDirection: 'column',
-        animation: 'slideInRight 0.25s ease-out',
+        position: 'absolute',
+        left: '50%', transform: 'translateX(-50%)',
+        top: Math.max(16, Math.min(clickY ? clickY - 120 : window.innerHeight * 0.06, window.innerHeight - window.innerHeight * 0.88 - 16)),
+        width: '94vw', maxWidth: 960, height: '88vh',
+        background: 'var(--bg-primary)', borderRadius: 16,
+        border: '1px solid var(--border-medium)',
+        boxShadow: '0 20px 60px rgba(0,0,0,0.3)', display: 'flex', flexDirection: 'column',
+        animation: 'fadeIn 0.2s ease-out',
       }}>
 
         {/* Header */}
@@ -329,17 +346,17 @@ export default function EmployeeDetail({ employee, employees: allEmployees, stor
           {tab === 'personal' && (
             <>
               <SectionTitle icon="👤" text="姓名" />
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
                 <div><div style={L}>姓</div><input className="form-input" style={{ width: '100%' }} value={form.last_name || ''} onChange={e => set('last_name', e.target.value)} /></div>
                 <div><div style={L}>名</div><input className="form-input" style={{ width: '100%' }} value={form.first_name || ''} onChange={e => set('first_name', e.target.value)} /></div>
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
                 <div><div style={L}>英文名</div><input className="form-input" style={{ width: '100%' }} value={form.name_en || ''} onChange={e => set('name_en', e.target.value)} /></div>
                 <div><div style={L}>職等</div><input className="form-input" style={{ width: '100%' }} value={form.grade || ''} onChange={e => set('grade', e.target.value)} placeholder="M1/S3" /></div>
               </div>
 
               <SectionTitle icon="📋" text="個人資料" />
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
                 <div><div style={L}>出生日期</div><input className="form-input" type="date" style={{ width: '100%' }} value={form.birth_date || ''} onChange={e => set('birth_date', e.target.value)} /></div>
                 <div><div style={L}>性別</div>
                   <select className="form-input" style={{ width: '100%' }} value={form.gender || ''} onChange={e => set('gender', e.target.value)}>
@@ -347,14 +364,14 @@ export default function EmployeeDetail({ employee, employees: allEmployees, stor
                   </select>
                 </div>
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
                 <div><div style={L}>國籍</div><input className="form-input" style={{ width: '100%' }} value={form.nationality || 'TW'} onChange={e => set('nationality', e.target.value)} /></div>
                 <div><div style={L}>身分證字號</div><input className="form-input" style={{ width: '100%' }} value={isAdmin ? (form.id_number || '') : maskId(form.id_number)} onChange={e => set('id_number', e.target.value)} readOnly={!isAdmin} /></div>
               </div>
               <div><div style={L}>地址</div><input className="form-input" style={{ width: '100%' }} value={form.address || ''} onChange={e => set('address', e.target.value)} /></div>
 
               <SectionTitle icon="🚨" text="緊急聯絡人" />
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
                 <div><div style={L}>姓名</div><input className="form-input" style={{ width: '100%' }} value={form.emergency_name || ''} onChange={e => set('emergency_name', e.target.value)} /></div>
                 <div><div style={L}>電話</div><input className="form-input" style={{ width: '100%' }} value={form.emergency_phone || ''} onChange={e => set('emergency_phone', e.target.value)} /></div>
               </div>
@@ -381,7 +398,7 @@ export default function EmployeeDetail({ employee, employees: allEmployees, stor
           {tab === 'org' && (
             <>
               <SectionTitle icon="💼" text="僱用資訊" />
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
                 <div><div style={L}>類型</div>
                   <select className="form-input" style={{ width: '100%' }} value={form.employment_type || '全職'} onChange={e => set('employment_type', e.target.value)}>
                     <option>全職</option><option>兼職</option>
@@ -393,11 +410,11 @@ export default function EmployeeDetail({ employee, employees: allEmployees, stor
                   </select>
                 </div>
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
                 <div><div style={L}>電話</div><input className="form-input" style={{ width: '100%' }} value={form.phone || ''} onChange={e => set('phone', e.target.value)} /></div>
                 <div><div style={L}>入職日期</div><input className="form-input" type="date" style={{ width: '100%' }} value={form.join_date || ''} onChange={e => set('join_date', e.target.value)} /></div>
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
                 <div><div style={L}>試用期結束</div><input className="form-input" type="date" style={{ width: '100%' }} value={form.probation_end || ''} onChange={e => set('probation_end', e.target.value)} /></div>
                 <div><div style={L}>離職日期</div><input className="form-input" type="date" style={{ width: '100%' }} value={form.resign_date || ''} onChange={e => set('resign_date', e.target.value)} /></div>
               </div>
@@ -428,7 +445,7 @@ export default function EmployeeDetail({ employee, employees: allEmployees, stor
                 </div>
                 <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 4 }}>勾選的門市會在「找人代班」時優先顯示此員工</div>
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
                 <div><div style={L}>部門</div>
                   <select className="form-input" style={{ width: '100%' }} value={form.dept || ''} onChange={e => set('dept', e.target.value)}>
                     <option value="">— 未指派 —</option>
@@ -447,7 +464,7 @@ export default function EmployeeDetail({ employee, employees: allEmployees, stor
               <div><div style={L}>職位</div><input className="form-input" style={{ width: '100%' }} value={form.position || ''} onChange={e => set('position', e.target.value)} placeholder="輸入或選擇職位" /></div>
 
               <SectionTitle icon="💰" text="薪資" />
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
                 <div><div style={L}>計薪方式</div>
                   <select className="form-input" style={{ width: '100%' }} value={form.salary_type || 'monthly'} onChange={e => set('salary_type', e.target.value)}>
                     <option value="monthly">月薪制</option>
@@ -460,7 +477,7 @@ export default function EmployeeDetail({ employee, employees: allEmployees, stor
                   <div><div style={L}>時薪 (NT$)</div><input className="form-input" type="number" style={{ width: '100%' }} placeholder="例：183" value={form.hourly_rate || ''} onChange={e => set('hourly_rate', e.target.value)} /></div>
                 )}
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
                 <div><div style={L}>每週工時上限</div><input className="form-input" type="number" style={{ width: '100%' }} value={form.weekly_hours || 40} onChange={e => set('weekly_hours', e.target.value)} /></div>
                 {(form.salary_type || 'monthly') === 'monthly' && (
                   <div><div style={L}>月底薪換算時薪</div>
@@ -547,9 +564,69 @@ export default function EmployeeDetail({ employee, employees: allEmployees, stor
                 )}
               </div>
 
-              <SectionTitle icon="💬" text="LINE 整合" />
-              <div style={{ padding: '10px 14px', background: 'var(--bg-card)', borderRadius: 8, border: '1px solid var(--border-subtle)', fontSize: 12, color: 'var(--text-muted)' }}>
-                LINE 帳號綁定請至「組織管理 → LINE 整合」管理，或由員工在 LINE 輸入 <code>/註冊 姓名</code> 自助綁定。
+              <SectionTitle icon="💬" text="LINE 帳號綁定" />
+
+              {/* 已綁定的 LINE 帳號 */}
+              {lineAccounts.length === 0 ? (
+                <div style={{ padding: '12px 14px', background: 'var(--bg-card)', borderRadius: 8, border: '1px solid var(--border-subtle)', fontSize: 12, color: 'var(--text-muted)' }}>
+                  尚未綁定任何 LINE 帳號
+                </div>
+              ) : lineAccounts.map(la => (
+                <div key={la.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 14px', background: 'var(--bg-card)', borderRadius: 8, border: '1px solid var(--border-subtle)', marginBottom: 6 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                    {la.picture_url ? (
+                      <img src={la.picture_url} alt="" style={{ width: 32, height: 32, borderRadius: '50%' }} />
+                    ) : (
+                      <div style={{ width: 32, height: 32, borderRadius: '50%', background: '#06C755', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 14, fontWeight: 700 }}>L</div>
+                    )}
+                    <div>
+                      <div style={{ fontSize: 13, fontWeight: 600 }}>{la.display_name || 'LINE 使用者'}</div>
+                      <div style={{ fontSize: 11, color: 'var(--text-muted)', fontFamily: 'monospace' }}>{la.line_user_id?.slice(0, 12)}...</div>
+                    </div>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <span style={{ fontSize: 10, padding: '2px 8px', borderRadius: 4, background: la.is_primary ? 'var(--accent-green-dim)' : 'var(--glass-light)', color: la.is_primary ? 'var(--accent-green)' : 'var(--text-muted)', fontWeight: 600 }}>
+                      {la.line_channels?.name || la.channel_id}{la.is_primary ? ' · 主要' : ''}
+                    </span>
+                    <button onClick={async () => {
+                      if (!confirm('確定解除此 LINE 綁定？')) return
+                      await supabase.from('employee_line_accounts').delete().eq('id', la.id)
+                      setLineAccounts(prev => prev.filter(x => x.id !== la.id))
+                    }} style={{ background: 'none', border: 'none', color: 'var(--accent-red)', cursor: 'pointer', padding: 2 }}>
+                      <Trash2 size={14} />
+                    </button>
+                  </div>
+                </div>
+              ))}
+
+              {/* 新增綁定 */}
+              <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
+                <select className="form-input" style={{ flex: '0 0 140px', fontSize: 12 }}
+                  value={newLineChannel} onChange={e => setNewLineChannel(e.target.value)}>
+                  <option value="">選擇頻道</option>
+                  {lineChannels.map(ch => <option key={ch.id} value={String(ch.id)}>{ch.name}</option>)}
+                </select>
+                <input className="form-input" type="text" style={{ flex: 1, fontSize: 12 }}
+                  placeholder="LINE User ID（U 開頭）" value={newLineUserId} onChange={e => setNewLineUserId(e.target.value)} />
+                <button className="btn btn-primary" style={{ fontSize: 12, padding: '6px 14px', whiteSpace: 'nowrap' }}
+                  disabled={!newLineUserId || !newLineChannel}
+                  onClick={async () => {
+                    const { data, error } = await supabase.from('employee_line_accounts').insert({
+                      employee_id: employee.id,
+                      channel_id: parseInt(newLineChannel),
+                      line_user_id: newLineUserId.trim(),
+                      is_primary: lineAccounts.length === 0,
+                      is_verified: true,
+                    }).select('*, line_channels(id, code, name)').single()
+                    if (error) { alert('綁定失敗：' + error.message); return }
+                    setLineAccounts(prev => [...prev, data])
+                    setNewLineUserId('')
+                  }}>
+                  <Plus size={12} /> 綁定
+                </button>
+              </div>
+              <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 6 }}>
+                員工也可在 LINE 輸入 <code style={{ background: 'var(--glass-light)', padding: '1px 6px', borderRadius: 3 }}>/註冊 {employee.name}</code> 自助綁定
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 14px', background: 'var(--bg-card)', borderRadius: 8, marginTop: 10, border: '1px solid var(--border-subtle)' }}>
                 <div>

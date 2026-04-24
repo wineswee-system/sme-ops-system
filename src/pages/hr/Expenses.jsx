@@ -11,7 +11,8 @@ import Modal, { Field } from '../../components/Modal'
 const CATEGORIES = ['交通', '住宿', '餐飲', '設備', '其他']
 
 export default function Expenses() {
-  const { profile } = useAuth()
+  const { profile, hasPermission } = useAuth()
+  const canApprove = hasPermission('finance.edit')
   const [expenses, setExpenses] = useState([])
   const [employees, setEmployees] = useState([])
   const [departments, setDepartments] = useState([])
@@ -154,7 +155,7 @@ export default function Expenses() {
                     )}
                   </td>
                   <td>
-                    {e.status === '待審核' && (
+                    {e.status === '待審核' && canApprove && (
                       <div style={{ display: 'flex', gap: 4 }}>
                         <button className="btn btn-sm btn-primary" onClick={() => handleApprove(e.id)}>核銷</button>
                         <button className="btn btn-sm btn-secondary" onClick={() => handleReject(e.id)}>駁回</button>

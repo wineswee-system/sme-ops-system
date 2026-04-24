@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { Workflow, ListChecks, CheckSquare, TrendingUp, Clock, CheckCircle, XCircle, AlertCircle, ChevronDown, ChevronUp, Check, X } from 'lucide-react'
-import { getWorkflows, getWorkflowInstances, getTasks, getChecklists } from '../../lib/db'
+import { getWorkflows, getWorkflowInstances, getTasks, getChecklists, getEmployees, getStores } from '../../lib/db'
 import { supabase } from '../../lib/supabase'
 import { advanceWorkflow } from '../../lib/workflowIntegration'
 import { checkAndNotifyDueTasks } from '../../lib/taskDueChecker'
 import LoadingSpinner from '../../components/LoadingSpinner'
+import TaskDetailPanel from '../../components/TaskDetailPanel'
 
 const STATUS_CONFIG = {
   '進行中': { color: 'var(--accent-cyan)', icon: Clock, badge: 'badge-info' },
@@ -18,31 +19,38 @@ export default function ProcessOverview() {
   const [steps, setSteps] = useState([])
   const [tasks, setTasks] = useState([])
   const [checklists, setChecklists] = useState([])
+  const [employees, setEmployees] = useState([])
+  const [stores, setStores] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [expandedId, setExpandedId] = useState(null)
   const [actionLoading, setActionLoading] = useState(false)
+  const [selectedTask, setSelectedTask] = useState(null)
 
   useEffect(() => {
     Promise.all([
       getWorkflows(),
       getWorkflowInstances(),
-      supabase.from('workflow_steps').select('*').order('step_order'),
+      supabase.from('tasks').select('*').not('workflow_instance_id', 'is', null).order('step_order'),
       getTasks(),
       getChecklists(),
-    ]).then(([w, inst, st, t, c]) => {
+      getEmployees(),
+      getStores(),
+    ]).then(([w, inst, st, t, c, emp, str]) => {
       setWorkflows(w.data || [])
       setInstances(inst.data || [])
       setSteps(st.data || [])
       setTasks(t.data || [])
       setChecklists(c.data || [])
+      setEmployees(emp.data || [])
+      setStores(str.data || [])
     }).catch(err => {
       console.error('Failed to load data:', err)
       setError('資料載入失敗，請重新整理頁面')
     }).finally(() => {
       setLoading(false)
       // 每次 session 自動檢查今天到期的任務，發 LINE 提醒
-      checkAndNotifyDueTasks().catch(() => {})
+      checkAndNotifyDueTasks().catch(err => console.warn('[Overview] Task due check failed:', err))
     })
   }, [])
 
@@ -50,7 +58,7 @@ export default function ProcessOverview() {
     setLoading(true)
     Promise.all([
       getWorkflows(), getWorkflowInstances(),
-      supabase.from('workflow_steps').select('*').order('step_order'),
+      supabase.from('tasks').select('*').not('workflow_instance_id', 'is', null).order('step_order'),
       getTasks(), getChecklists(),
     ]).then(([w, inst, st, t, c]) => {
       setWorkflows(w.data || [])
@@ -126,15 +134,18 @@ export default function ProcessOverview() {
         </div>
         <div className="data-table-wrapper">
           <table className="data-table">
-            <thead><tr><th>流程名稱</th><th>申請人</th><th>審核人</th><th>開始時間</th><th>狀態</th><th>進度</th></tr></thead>
+            <thead><tr><th>流程名稱</th><th>任務統計</th><th>申請人</th><th>審核人</th><th>開始時間</th><th>狀態</th><th>進度</th></tr></thead>
             <tbody>
               {instances.length === 0 ? (
-                <tr><td colSpan={6} style={{ textAlign: 'center', color: 'var(--text-muted)', padding: 24 }}>
+                <tr><td colSpan={7} style={{ textAlign: 'center', color: 'var(--text-muted)', padding: 24 }}>
                   尚無簽核流程 — 當員工提交請假/加班/報帳/出差/採購時會自動產生
                 </td></tr>
               ) : instances.map(inst => {
-                const instSteps = steps.filter(s => s.instance_id === inst.id)
+                const instSteps = steps.filter(s => s.workflow_instance_id === inst.id)
                 const completed = instSteps.filter(s => s.status === '已完成').length
+                const inProgress = instSteps.filter(s => s.status === '進行中').length
+                const blocked = instSteps.filter(s => s.status === '已退回' || s.status === '已擱置').length
+                const notStarted = instSteps.filter(s => s.status === '未開始' || s.status === '待處理').length
                 const total = instSteps.length
                 const cfg = STATUS_CONFIG[inst.status] || STATUS_CONFIG['進行中']
                 const isExpanded = expandedId === inst.id
@@ -145,6 +156,14 @@ export default function ProcessOverview() {
                       <td style={{ fontWeight: 600 }}>
                         {isExpanded ? <ChevronUp size={14} style={{ marginRight: 4 }} /> : <ChevronDown size={14} style={{ marginRight: 4 }} />}
                         {inst.template_name}
+                      </td>
+                      <td>
+                        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', fontSize: 12, fontWeight: 600 }}>
+                          <span title="未開始" style={{ color: 'var(--text-muted)' }}>⬜ {notStarted}</span>
+                          <span title="進行中" style={{ color: 'var(--accent-cyan)' }}>🔄 {inProgress}</span>
+                          <span title="已完成" style={{ color: 'var(--accent-green)' }}>✅ {completed}</span>
+                          <span title="已擱置" style={{ color: 'var(--accent-red)' }}>🚫 {blocked}</span>
+                        </div>
                       </td>
                       <td>{inst.started_by || '-'}</td>
                       <td>{currentStep?.assignee || inst.assignee || '-'}</td>
@@ -161,13 +180,18 @@ export default function ProcessOverview() {
                     </tr>
                     {isExpanded && (
                       <tr>
-                        <td colSpan={6} style={{ padding: '0 16px 16px', background: 'var(--glass-light)' }}>
+                        <td colSpan={7} style={{ padding: '0 16px 16px', background: 'var(--glass-light)' }}>
                           <div style={{ display: 'flex', flexDirection: 'column', gap: 8, paddingTop: 8 }}>
                             {instSteps.map(s => (
-                              <div key={s.id} style={{
-                                display: 'flex', alignItems: 'center', gap: 12, padding: '10px 14px',
-                                borderRadius: 8, background: 'var(--bg-card)', border: '1px solid var(--border-subtle)',
-                              }}>
+                              <div key={s.id}
+                                onClick={e => { e.stopPropagation(); setSelectedTask({ ...s, _instance: inst }) }}
+                                style={{
+                                  display: 'flex', alignItems: 'center', gap: 12, padding: '10px 14px',
+                                  borderRadius: 8, background: 'var(--bg-card)', border: '1px solid var(--border-subtle)',
+                                  cursor: 'pointer', transition: 'border-color 0.15s, background 0.15s',
+                                }}
+                                onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--accent-cyan)' }}
+                                onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border-subtle)' }}>
                                 <div style={{
                                   width: 24, height: 24, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
                                   background: s.status === '已完成' ? 'var(--accent-green)' : s.status === '已退回' ? 'var(--accent-red)' : 'var(--border-medium)',
@@ -261,6 +285,20 @@ export default function ProcessOverview() {
           </div>
         </div>
       </div>
+
+      {selectedTask && (
+        <TaskDetailPanel
+          step={selectedTask}
+          instance={selectedTask._instance}
+          allSteps={steps.filter(s => s.workflow_instance_id === selectedTask._instance?.id)}
+          employees={employees}
+          stores={stores}
+          checklists={checklists}
+          onUpdate={(d) => { setSelectedTask({ ...d, _instance: selectedTask._instance }); reload() }}
+          onDelete={() => { setSelectedTask(null); reload() }}
+          onClose={() => setSelectedTask(null)}
+        />
+      )}
     </div>
   )
 }

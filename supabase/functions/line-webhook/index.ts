@@ -3,10 +3,33 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import type { PendingAction } from './types.ts';
 import { verifySignature, getLineProfile, getGroupSummary, text, replyAndLog, pushAndLog } from './line-api.ts';
 import { upsertLineUser, upsertLineGroup, upsertLineGroupMember, logMessage, logCommand, logError } from './db-helpers.ts';
-import { mkBtn, withQuickReplies, flexMenu, flexSuccess, flexManagerMenu, buildWorkflowSelectionFlex } from './flex-builders.ts';
+import { mkBtn, withQuickReplies, flexMenu, flexSuccess, flexManagerMenu, buildWorkflowSelectionFlex, flexLiffShortcut, flexAttendanceCard } from './flex-builders.ts';
 import { cmdTaskList, cmdTaskCreate, cmdTaskDone, cmdTaskUpdate, cmdTaskRequestConfirm, cmdTaskConfirmRespond, cmdNotes, cmdProjectList, cmdProjectDone, cmdProjectNote, cmdProjectStatus } from './command-handlers.ts';
 import { cmdWorkflowStatus, cmdWorkflowTasks, checkManager, cmdManagerOverview, cmdManagerAssign, cmdManagerLeaveReview, cmdRegister, handleCreateTaskStep } from './command-handlers-workflow.ts';
 import { resolveChannel, resolveEnv } from '../_shared/channel.ts';
+
+// LIFF deeplink shortcuts — text command → LIFF page on sme-ops-liff
+type LiffShortcut = { key: string; match: string[]; title: string; subtitle: string; buttonLabel: string; path: string; emoji: string };
+const LIFF_SHORTCUTS: LiffShortcut[] = [
+  { key: "clock",            match: ["打卡", "/打卡", "上班", "下班"],                  title: "打卡",         subtitle: "上下班打卡（需 GPS 定位）",  buttonLabel: "📍 開始打卡",   path: "/clock",            emoji: "📍" },
+  { key: "clock_correction", match: ["補打卡", "/補打卡", "補登"],                       title: "補打卡申請",   subtitle: "忘記打卡？線上補登",         buttonLabel: "📝 補打卡",     path: "/clock-correction", emoji: "📝" },
+  { key: "schedule",         match: ["班表", "/班表", "我的班表"],                       title: "我的班表",     subtitle: "查看本月排班",               buttonLabel: "📅 開啟班表",   path: "/my-schedule",      emoji: "📅" },
+  { key: "leave",            match: ["請假", "/請假", "請假申請"],                       title: "請假申請",     subtitle: "提交請假單",                 buttonLabel: "🏖 申請請假",    path: "/leave",            emoji: "🏖" },
+  { key: "off_request",      match: ["希望休", "/希望休", "休假申請"],                   title: "希望休",       subtitle: "提出希望休日",               buttonLabel: "✨ 提出希望休", path: "/off-request",      emoji: "✨" },
+  { key: "overtime",         match: ["加班", "/加班", "加班申請"],                       title: "加班申請",     subtitle: "提交加班單",                 buttonLabel: "⏰ 申請加班",   path: "/overtime",         emoji: "⏰" },
+  { key: "business_trip",    match: ["出差", "/出差", "出差申請"],                       title: "出差申請",     subtitle: "提交出差單",                 buttonLabel: "✈️ 申請出差",   path: "/business-trip",    emoji: "✈️" },
+  { key: "expense",          match: ["費用", "/費用", "報銷", "費用申請"],               title: "費用申請",     subtitle: "報帳、補貼",                 buttonLabel: "💰 申請費用",   path: "/expense-request",  emoji: "💰" },
+  { key: "expenses_list",    match: ["費用紀錄", "/費用紀錄"],                            title: "費用紀錄",     subtitle: "查看歷史費用單",             buttonLabel: "📊 開啟紀錄",   path: "/expenses",         emoji: "📊" },
+  { key: "approve",          match: ["簽核", "/簽核", "待簽核", "審核"],                   title: "待我簽核",     subtitle: "主管審批項目",               buttonLabel: "✅ 開啟簽核",   path: "/approve",          emoji: "✅" },
+  { key: "approval_status",  match: ["簽核狀態", "/簽核狀態", "我的申請"],                title: "我的申請進度", subtitle: "查看送出單據的審批狀態",     buttonLabel: "📋 查看進度",   path: "/approval-status",  emoji: "📋" },
+  { key: "dashboard",        match: ["儀表板", "儀錶板", "/儀表板", "/儀錶板"],           title: "營運儀表板",   subtitle: "流程進度 / 任務統計",        buttonLabel: "📊 開啟儀表板", path: "/dashboard",        emoji: "📊" },
+  { key: "salary",           match: ["薪水", "/薪水", "查薪水", "薪資"],                   title: "薪資查詢",     subtitle: "查看歷月薪資單",             buttonLabel: "💰 查看薪資",   path: "/salary",           emoji: "💰" },
+  { key: "todo",             match: ["代辦", "代辦項目", "/代辦", "/代辦項目", "待辦"],     title: "代辦項目",     subtitle: "任務與簽核一覽",             buttonLabel: "📋 開啟代辦",   path: "/todo",             emoji: "📋" },
+];
+function matchLiffShortcut(text: string): LiffShortcut | null {
+  for (const sc of LIFF_SHORTCUTS) if (sc.match.includes(text)) return sc;
+  return null;
+}
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -46,6 +69,8 @@ serve(async (req) => {
     resolveEnv("LIFF_NEW_TASK_ID", channelCode) ??
     channelRow.liff_id ??
     "";
+  const liffDashboardId =
+    resolveEnv("LIFF_DASHBOARD_ID", channelCode) ?? "";
 
   if (!channelSecret || !accessToken) {
     console.error(`[webhook] Missing credentials for channel=${channelCode}`);
@@ -223,7 +248,21 @@ serve(async (req) => {
       const isManager = (lineUser.is_verified && lineUser.employee_id)
         ? await checkManager(lineUser.employee_id, db)
         : false;
-      responseMsg = flexMenu(isGroup, isManager, liffNewTaskId);
+      const menu = flexMenu(isGroup, isManager, liffNewTaskId, liffDashboardId, liffTaskId);
+      // Append HR shortcut chips (max 13 items per LINE quick reply spec).
+      responseMsg = isGroup ? menu : withQuickReplies(menu, [
+        { label: "🗓 出勤", text: "出勤" },
+        { label: "📍 打卡", text: "打卡" },
+        { label: "📅 班表", text: "班表" },
+        { label: "🏖 請假", text: "請假" },
+        { label: "⏰ 加班", text: "加班" },
+        { label: "💰 費用", text: "費用" },
+        { label: "✅ 簽核", text: "簽核" },
+      ]);
+
+    } else if (lower === "/出勤" || lower === "出勤" || lower === "attendance") {
+      commandName = "attendance_card";
+      responseMsg = flexAttendanceCard(liffTaskId, liffNewTaskId, liffDashboardId);
 
     } else if (lower.startsWith("/註冊") || lower.startsWith("註冊")) {
       commandName = "register";
@@ -437,7 +476,7 @@ serve(async (req) => {
       } else if (!await checkManager(lineUser.employee_id, db)) {
         responseMsg = text("🔒 您沒有管理員權限。\n如需開通，請聯絡系統管理員。");
       } else {
-        responseMsg = flexManagerMenu();
+        responseMsg = flexManagerMenu(liffTaskId, liffNewTaskId, liffDashboardId);
       }
 
     } else if (lower === "/管理 全覽" || lower === "/manage overview") {
@@ -802,12 +841,22 @@ serve(async (req) => {
         }
       }
 
-    } else if (
-      lower.startsWith('/請假') || lower.startsWith('請假申請') || lower === '請假'
-    ) {
-      commandName = "leave_request_prompt";
-      // Leave request prompt — direct user to LIFF app
-      responseMsg = text('📱 請假申請請使用 LIFF App：\n點選選單中的「請假申請」或輸入 /說明 查看功能選單。');
+    } else if (matchLiffShortcut(lower)) {
+      const sc = matchLiffShortcut(lower)!;
+      commandName = `liff_shortcut_${sc.key}`;
+      const liffId = liffNewTaskId || liffTaskId;
+      if (!liffId) {
+        responseMsg = text(`⚠️ ${sc.title} 無法開啟：管理員尚未設定 LIFF_TASK_ID。`);
+      } else {
+        responseMsg = flexLiffShortcut({
+          title: sc.title,
+          subtitle: sc.subtitle,
+          buttonLabel: sc.buttonLabel,
+          liffId,
+          liffPath: sc.path,
+          emoji: sc.emoji,
+        });
+      }
 
     } else if (!isGroup) {
       commandName = "unrecognized";

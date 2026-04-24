@@ -1,14 +1,16 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import {
   Plus, Pencil, Trash2, ChevronRight, CheckCircle,
   X, Users, User, Play, Pause, Rocket, Archive,
-  ClipboardList, Square, RotateCcw, Ban, ChevronDown
+  ClipboardList, Square, RotateCcw, Ban, ChevronDown, Sparkles
 } from 'lucide-react'
 import {
   getWorkflows, createWorkflow, updateWorkflow,
   getWorkflowInstances, updateWorkflowInstance,
   getTasks, getTasksByInstance, createTask, createTasksBatch, updateTask,
   getWorkflowCategories, createWorkflowCategory, deleteWorkflowCategory,
+  getApprovalChains,
 } from '../../lib/db'
 import { supabase } from '../../lib/supabase'
 import LoadingSpinner from '../../components/LoadingSpinner'
@@ -30,6 +32,7 @@ import { generateFlowByRules } from './components/flowTemplates'
 const GEMINI_KEY = import.meta.env.VITE_GEMINI_API_KEY
 
 export default function Workflows() {
+  const navigate = useNavigate()
   const { profile } = useAuth()
   const currentUser = profile?.name || '管理員'
   const [tab, setTab] = useState('active')
@@ -94,7 +97,7 @@ export default function Workflows() {
       supabase.from('checklists').select('*').order('id'),
       supabase.from('sop_templates').select('*').order('id'),
       supabase.from('departments').select('*').order('name'),
-      supabase.from('approval_chains').select('*').order('id'),
+      getApprovalChains(),
       getWorkflowCategories(),
     ]).then(([w, inst, t, emp, loc, cl, tpl, dept, ac, cat]) => {
       setWorkflows(w.data || [])
@@ -446,6 +449,10 @@ export default function Workflows() {
             <h2><span className="header-icon">🔄</span> 流程管理</h2>
             <p>管理流程範本及進行中的工作流程</p>
           </div>
+          <button className="btn" onClick={() => navigate('/process/setup-assistant')}
+            style={{ display: 'flex', alignItems: 'center', gap: 6, border: '1px solid var(--accent-purple)', color: 'var(--accent-purple)', background: 'var(--accent-purple-dim)' }}>
+            <Sparkles size={14} /> AI 建立流程
+          </button>
         </div>
       </div>
 

@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { ModalOverlay } from '../../components/Modal'
 import Modal, { Field } from '../../components/Modal'
 import {
   Plus, X, ChevronRight, ChevronDown, Check, Clock, Pause, Ban, Play,
   MessageSquare, Workflow, CheckSquare, Edit3, Trash2, FolderOpen, Filter, Rocket, Copy,
-  Users, Settings, Columns
+  Users, Settings, Columns, Sparkles
 } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
 import { getEmployees, getProjectSections, createProjectSection, updateProjectSection, deleteProjectSection } from '../../lib/db'
@@ -28,6 +29,7 @@ const fmt = (n) => n != null ? `NT$ ${Number(n).toLocaleString()}` : '-'
 const emptyForm = { name: '', description: '', status: '規劃中', priority: '中', owner: '', department: '', store: '', start_date: '', end_date: '', budget: '' }
 
 export default function Projects() {
+  const navigate = useNavigate()
   const { profile } = useAuth()
   const [projects, setProjects] = useState([])
   const [workflows, setWorkflows] = useState([])
@@ -563,9 +565,15 @@ export default function Projects() {
             <h2><span className="header-icon">📁</span> 專案管理</h2>
             <p>Project → Workflow → Task 三層架構</p>
           </div>
-          <button className="btn btn-primary" onClick={() => { setForm({ ...emptyForm, owner: profile?.name || '' }); setEditingId(null); setShowModal(true) }}>
-            <Plus size={14} /> 新增專案
-          </button>
+          <div style={{ display: 'flex', gap: 8 }}>
+            <button className="btn" onClick={() => navigate('/process/setup-assistant')}
+              style={{ display: 'flex', alignItems: 'center', gap: 6, border: '1px solid var(--accent-purple)', color: 'var(--accent-purple)', background: 'var(--accent-purple-dim)' }}>
+              <Sparkles size={14} /> AI 建立專案
+            </button>
+            <button className="btn btn-primary" onClick={() => { setForm({ ...emptyForm, owner: profile?.name || '' }); setEditingId(null); setShowModal(true) }}>
+              <Plus size={14} /> 新增專案
+            </button>
+          </div>
         </div>
       </div>
 
