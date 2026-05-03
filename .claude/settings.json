@@ -18,7 +18,14 @@
       "Bash(cat \"$\\(npm root -g\\)/gitnexus/package.json\")",
       "Bash(grep -rn \"ensureHeap\\\\|8GB\\\\|max-old-space\" \"$\\(npm root -g\\)/gitnexus/dist/\")",
       "Bash(node --max-old-space-size=8192 --input-type=module -e ' *)",
-      "Bash(NODE_OPTIONS=\"--max-old-space-size=8192\" node \"C:/Users/TING/AppData/Roaming/npm/node_modules/gitnexus/dist/cli/index.js\" analyze --skip-agents-md)"
+      "Bash(NODE_OPTIONS=\"--max-old-space-size=8192\" node \"C:/Users/TING/AppData/Roaming/npm/node_modules/gitnexus/dist/cli/index.js\" analyze --skip-agents-md)",
+      "mcp__plugin_everything-claude-code_exa__web_fetch_exa",
+      "Bash(git -C \"c:/Users/TING/Documents/Astro8/AI/sme-ops\" diff --stat)",
+      "Bash(git -C \"c:/Users/TING/Documents/Astro8/AI/sme-ops\" diff --name-only)",
+      "Bash(git -C \"c:/Users/TING/Documents/Astro8/AI/sme-ops\" diff src/lib/db.js)",
+      "Bash(git -C \"c:/Users/TING/Documents/Astro8/AI/sme-ops\" diff src/pages/hr/Transfer.jsx)",
+      "Bash(git -C \"c:/Users/TING/Documents/Astro8/AI/sme-ops\" diff src/modules/HRModule.jsx)",
+      "Bash(git -C \"c:/Users/TING/Documents/Astro8/AI/sme-ops\" diff src/App.jsx)"
     ]
   }
 }
