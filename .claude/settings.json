@@ -11,7 +11,14 @@
       "Bash(where supabase *)",
       "Bash(npx supabase *)",
       "PowerShell(cd \"c:\\\\Users\\\\TING\\\\Documents\\\\Astro8\\\\AI\\\\sme-ops\"; $env:SUPABASE_ACCESS_TOKEN=\"sbp_7c2630d0bd643863b161b57d569d62930237128f\"; npx supabase migration list 2>&1 | Select-Object -Last 20)",
-      "Bash(git commit -m ' *)"
+      "Bash(git commit -m ' *)",
+      "Bash(npm root *)",
+      "Bash(cd \"$\\(npm root -g\\)/gitnexus\")",
+      "Bash(npx gitnexus *)",
+      "Bash(cat \"$\\(npm root -g\\)/gitnexus/package.json\")",
+      "Bash(grep -rn \"ensureHeap\\\\|8GB\\\\|max-old-space\" \"$\\(npm root -g\\)/gitnexus/dist/\")",
+      "Bash(node --max-old-space-size=8192 --input-type=module -e ' *)",
+      "Bash(NODE_OPTIONS=\"--max-old-space-size=8192\" node \"C:/Users/TING/AppData/Roaming/npm/node_modules/gitnexus/dist/cli/index.js\" analyze --skip-agents-md)"
     ]
   }
 }
