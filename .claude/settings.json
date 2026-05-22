@@ -27,7 +27,11 @@
       "Bash(git -C \"c:/Users/TING/Documents/Astro8/AI/sme-ops\" diff src/modules/HRModule.jsx)",
       "Bash(git -C \"c:/Users/TING/Documents/Astro8/AI/sme-ops\" diff src/App.jsx)",
       "Read(//c/Users/TING/.claude/projects/c--Users-TING-Documents-Astro8-AI-sme-ops/tool-results/**)",
-      "Read(//c/Users/TING/AppData/Local/Temp/claude/c--Users-TING-Documents-Astro8-AI-sme-ops/acb42952-b47a-442f-8d6f-3f29a1967346/tasks/**)"
+      "Read(//c/Users/TING/AppData/Local/Temp/claude/c--Users-TING-Documents-Astro8-AI-sme-ops/acb42952-b47a-442f-8d6f-3f29a1967346/tasks/**)",
+      "Bash(/c/Users/TING/flutter/bin/flutter --version)",
+      "Bash(/c/Users/TING/flutter/bin/flutter create *)",
+      "Bash(/c/Users/TING/flutter/bin/flutter pub *)",
+      "Bash(/c/Users/TING/flutter/bin/flutter analyze *)"
     ]
   }
 }
