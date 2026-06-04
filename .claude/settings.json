@@ -32,7 +32,10 @@
       "Bash(/c/Users/TING/flutter/bin/flutter create *)",
       "Bash(/c/Users/TING/flutter/bin/flutter pub *)",
       "Bash(/c/Users/TING/flutter/bin/flutter analyze *)",
-      "Bash(git pull *)"
+      "Bash(git pull *)",
+      "Bash(git stash *)",
+      "Bash(grep -v \"import\\\\|//\\\\|tenant\\\\?.organization\\\\|tenant\\\\?.id\\\\b\")",
+      "Bash(grep -v \"organization_id\\\\|\\\\.id\\\\b\\\\|import\\\\|//\\\\|tenant\\\\.organization\\\\b\")"
     ]
   }
 }
