@@ -35,7 +35,11 @@
       "Bash(git pull *)",
       "Bash(git stash *)",
       "Bash(grep -v \"import\\\\|//\\\\|tenant\\\\?.organization\\\\|tenant\\\\?.id\\\\b\")",
-      "Bash(grep -v \"organization_id\\\\|\\\\.id\\\\b\\\\|import\\\\|//\\\\|tenant\\\\.organization\\\\b\")"
+      "Bash(grep -v \"organization_id\\\\|\\\\.id\\\\b\\\\|import\\\\|//\\\\|tenant\\\\.organization\\\\b\")",
+      "Bash(Get-ChildItem -Path \"c:\\\\Users\\\\TING\\\\Documents\\\\Astro8\\\\AI\\\\sme-ops\\\\src\" -Directory)",
+      "Bash(Select-Object Name)",
+      "PowerShell(wc -l)",
+      "PowerShell(@\\(ls \"c:\\\\Users\\\\TING\\\\Documents\\\\Astro8\\\\AI\\\\sme-ops\\\\src\\\\pages\\\\hr\" -File\\).Count)"
     ]
   }
 }
