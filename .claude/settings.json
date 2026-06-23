@@ -72,7 +72,11 @@
       "mcp__plugin_everything-claude-code_playwright__browser_navigate",
       "PowerShell(Get-Content \"c:\\\\Users\\\\TING\\\\Documents\\\\Astro8\\\\AI\\\\sme-ops\\\\.env\" | Where-Object { $_ -match \"VITE_SUPABASE\" })",
       "PowerShell(Copy-Item \"c:\\\\Users\\\\TING\\\\Documents\\\\Astro8\\\\AI\\\\sme-ops\\\\.env\" \"c:\\\\Users\\\\TING\\\\Documents\\\\Astro8\\\\AI\\\\sme-ops\\\\apps\\\\booking\\\\.env\"; Get-Content \"c:\\\\Users\\\\TING\\\\Documents\\\\Astro8\\\\AI\\\\sme-ops\\\\apps\\\\booking\\\\.env\" | Where-Object { $_ -match \"VITE_SUPABASE\" })",
-      "PowerShell($conns = Get-NetTCPConnection -LocalPort 5174,5175 -ErrorAction SilentlyContinue; $conns | ForEach-Object { \"Port $\\($_.LocalPort\\) PID $\\($_.OwningProcess\\)\"; Stop-Process -Id $_.OwningProcess -Force -ErrorAction SilentlyContinue }; \"Done\")"
+      "PowerShell($conns = Get-NetTCPConnection -LocalPort 5174,5175 -ErrorAction SilentlyContinue; $conns | ForEach-Object { \"Port $\\($_.LocalPort\\) PID $\\($_.OwningProcess\\)\"; Stop-Process -Id $_.OwningProcess -Force -ErrorAction SilentlyContinue }; \"Done\")",
+      "Bash(git -C \"c:\\\\Users\\\\TING\\\\Documents\\\\Astro8\\\\AI\\\\sme-ops\" status)",
+      "Bash(git -C \"c:\\\\Users\\\\TING\\\\Documents\\\\Astro8\\\\AI\\\\sme-ops\" diff)",
+      "Bash(git -C \"c:\\\\Users\\\\TING\\\\Documents\\\\Astro8\\\\AI\\\\sme-ops\" add src/components/FormBindingsPicker.jsx)",
+      "Bash(git -C 'c:\\\\Users\\\\TING\\\\Documents\\\\Astro8\\\\AI\\\\sme-ops' commit -m ' *)"
     ],
     "additionalDirectories": [
       "c:\\Users\\TING\\Documents\\Astro8\\AI\\member-app\\lib\\shared\\theme",
