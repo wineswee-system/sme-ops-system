@@ -68,7 +68,11 @@
       "Bash(git -C \"c:/Users/TING/Documents/Astro8/AI/sme-ops\" diff --stat HEAD)",
       "Bash(git -C \"c:/Users/TING/Documents/Astro8/AI/sme-ops\" diff HEAD -- src/pages/process/components/ProjectDetailPanel.jsx src/pages/process/settings/DelegationRules.jsx src/pages/system/Triggers.jsx)",
       "Bash(git commit -m 'fix\\(migration\\): form_templates RLS policy 改用 org_visible\\(\\) 取代不存在的 organization_members *)",
-      "Bash(git -C \"c:/Users/TING/Documents/Astro8/AI/sme-ops\" log --oneline -3)"
+      "Bash(git -C \"c:/Users/TING/Documents/Astro8/AI/sme-ops\" log --oneline -3)",
+      "mcp__plugin_everything-claude-code_playwright__browser_navigate",
+      "PowerShell(Get-Content \"c:\\\\Users\\\\TING\\\\Documents\\\\Astro8\\\\AI\\\\sme-ops\\\\.env\" | Where-Object { $_ -match \"VITE_SUPABASE\" })",
+      "PowerShell(Copy-Item \"c:\\\\Users\\\\TING\\\\Documents\\\\Astro8\\\\AI\\\\sme-ops\\\\.env\" \"c:\\\\Users\\\\TING\\\\Documents\\\\Astro8\\\\AI\\\\sme-ops\\\\apps\\\\booking\\\\.env\"; Get-Content \"c:\\\\Users\\\\TING\\\\Documents\\\\Astro8\\\\AI\\\\sme-ops\\\\apps\\\\booking\\\\.env\" | Where-Object { $_ -match \"VITE_SUPABASE\" })",
+      "PowerShell($conns = Get-NetTCPConnection -LocalPort 5174,5175 -ErrorAction SilentlyContinue; $conns | ForEach-Object { \"Port $\\($_.LocalPort\\) PID $\\($_.OwningProcess\\)\"; Stop-Process -Id $_.OwningProcess -Force -ErrorAction SilentlyContinue }; \"Done\")"
     ],
     "additionalDirectories": [
       "c:\\Users\\TING\\Documents\\Astro8\\AI\\member-app\\lib\\shared\\theme",
