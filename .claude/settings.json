@@ -65,7 +65,10 @@
       "Bash(git -C \"c:/Users/TING/Documents/Astro8/AI/sme-ops\" status --short)",
       "Bash(git -C \"c:/Users/TING/Documents/Astro8/AI/sme-ops\" log --oneline -8)",
       "Bash(git -C \"c:/Users/TING/Documents/Astro8/AI/sme-ops\" show c96a614d --stat)",
-      "Bash(git -C \"c:/Users/TING/Documents/Astro8/AI/sme-ops\" diff --stat HEAD)"
+      "Bash(git -C \"c:/Users/TING/Documents/Astro8/AI/sme-ops\" diff --stat HEAD)",
+      "Bash(git -C \"c:/Users/TING/Documents/Astro8/AI/sme-ops\" diff HEAD -- src/pages/process/components/ProjectDetailPanel.jsx src/pages/process/settings/DelegationRules.jsx src/pages/system/Triggers.jsx)",
+      "Bash(git commit -m 'fix\\(migration\\): form_templates RLS policy 改用 org_visible\\(\\) 取代不存在的 organization_members *)",
+      "Bash(git -C \"c:/Users/TING/Documents/Astro8/AI/sme-ops\" log --oneline -3)"
     ],
     "additionalDirectories": [
       "c:\\Users\\TING\\Documents\\Astro8\\AI\\member-app\\lib\\shared\\theme",
